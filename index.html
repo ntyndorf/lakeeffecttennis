@@ -1856,6 +1856,14 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
 /* six tabs on a phone: tighter labels */
 @media (max-width:640px){.tabs .tab .tl{font-size:11px;letter-spacing:0}.tabs .tab{padding-left:2px;padding-right:2px;min-width:0;flex:1 1 0}}
 @media (max-width:359px){.tabs .tab .tl{font-size:10px}}
+
+/* recaps: a swipeable strip of images */
+.rc-strip{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;overscroll-behavior-x:contain}
+.rc-strip .shr-img{flex:0 0 auto;display:block;width:78%;max-width:420px;height:auto;scroll-snap-align:center;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.rc-strip.shr-story .shr-img{width:auto;height:54vh;max-width:none}
+.rc-count{margin:0 0 10px;text-align:center}
+.rc-hint{margin:0 0 10px}
+.rc-box .empty{margin:8px 0}
 </style><link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&amp;family=Atkinson+Hyperlegible:wght@400;700&amp;family=Archivo+Black&amp;family=Yellowtail&amp;family=Instrument+Serif:ital@0;1&amp;display=swap"><div class="wrap" id="app"></div><script type="application/json" id="league-data">{"league":{"name":"McFetridge Winter Singles","season":"Winter 2026–27","venue":"McFetridge Sports Center","address":"3843 N California Ave","level":"3.0–3.5","startDate":"2026-11-01","endDate":"","tipUrl":"https://venmo.com/u/nicktyndorf","commissioner":"Nick","draft":false,"news":"","newsDate":"2026-10-09"},"players":[{"id":"5u76dri","name":"Nick T","level":"3.0","prof":{"plays":"Righty","bh":"Two-handed","shot":"Inside-out forehand","pro":"Daniil Medvedev"},"ph":1},{"id":"p5onhu0","name":"Spencer C","level":"3.25","ph":1},{"id":"wd1jmau","name":"Brendan O","level":"3.0","ph":1},{"id":"ata2iuw","name":"Tim S","level":"3.0","ph":1},{"id":"sxkx0ga","name":"Emmett F","level":"3.0","ph":1},{"id":"prz4fd6","name":"Mohammed F","level":"3.5","ph":1},{"id":"67cu010","name":"Vitaliy B","level":"3.25","ph":1},{"id":"vswai94","name":"Luke H","level":"3.25","ph":1},{"id":"dp9j7ls","name":"Spencer P","level":"3.25","ph":1},{"id":"cuwu10i","name":"Juan G","level":"3.0","ph":1},{"id":"mfuf932","name":"Zach K","level":"3.0","ph":1},{"id":"iivf8x7","name":"Alvaro R","level":"3.0","ph":1},{"id":"wg8fb4m","name":"John W","level":"3.25","ph":1},{"id":"iev0edc","name":"Nathan H","level":"3.0","ph":1},{"id":"tm2km4c","name":"Brian K","level":"3.0","ph":1},{"id":"uu82eoc","name":"Aidan V","level":"3.0","ph":1},{"id":"w5zwbyo","name":"Salem H","level":"3.25","ph":1},{"id":"m620f34","name":"Bill J","level":"3.25","ph":1},{"id":"zwb6fo9","name":"Peter R","level":"3.0","ph":1},{"id":"4xr256c","name":"Will C","level":"3.0","ph":1}],"matches":[],"updated":"2026-10-29T18:05:36.952Z","upcoming":[]}</script><script id="page-js">
 (function(){
   const SRC = (() => { const e = document.getElementById('league-data').textContent; try { const c = localStorage.getItem('le-state'); if (c) { const cu = (JSON.parse(c) || {}).updated || '', eu = (JSON.parse(e) || {}).updated || ''; if (cu > eu) return c; } } catch(_) {} return e; })();
@@ -2031,7 +2039,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   function markDirty(){ dirty = true; render(); }
 
   function weekAgoRanks(){ const cut = new Date(Date.now() - 7*864e5), cs = new Date(cut.getTime() - cut.getTimezoneOffset()*60000).toISOString().slice(0, 10), all = state.matches, o = {};
-    try { state.matches = all.filter(m => m.date && m.date <= cs); standings().forEach((r, i) => { if (r.mp) o[r.id] = i + 1; }); } catch(_) {} finally { state.matches = all; } return o; }
+    const r0 = RAT; try { state.matches = all.filter(m => m.date && m.date <= cs); standings().forEach((r, i) => { if (r.mp) o[r.id] = i + 1; }); } catch(_) {} finally { state.matches = all; RAT = r0; } return o; }
   function renderStandings(){
     if (!state.players.length) return `<div class="empty">No players yet. Standings appear here once the roster is set and scores come in.</div>`;
     const rows = standings();
@@ -2049,7 +2057,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
           <div class="spts"><b data-count="${r.pts}">${r.pts}</b><span>pts</span></div></div>`; }).join('')}</section>
       <button type="button" class="scorebox sb1" data-tab="rules" aria-label="Scoring: win 3, close loss 2, loss 1, upset plus 1. Open the rules">${lic('trophy')}<span class="sb-l">Win 3 · Close loss 2 · Loss 1 · Upset +1</span><span class="sb-s">Win 3 · Close L 2 · Loss 1 · Upset +1</span><em aria-hidden="true">›</em></button>
       ${(() => { const yet = rows.filter(r => !r.mp); if (!yet.length || yet.length === rows.length) return ''; return `<section class="yet"><h3>Yet to play</h3><div class="yet-l">${yet.map(r => `<button class="yet-p${LV.claims[r.id] ? ' joined' : ''}" data-player="${r.id}"${LV.claims[r.id] ? ' title="Signed up and ready to play"' : ''}>${avatar(r.id)}<span>${esc(r.name)}</span></button>`).join('')}</div></section>`; })()}
-      ${played ? `<div class="shr-links"><span>Share</span><button type="button" data-card="standings">${lic('chart')}Standings</button><button type="button" data-card="recap">${lic('news')}Weekly recap</button></div>` : ''}
+      ${played ? `<div class="shr-links"><span>Share</span><button type="button" data-card="standings">${lic('chart')}Standings</button><button type="button" data-recap="week">${lic('news')}Weekly recap</button><button type="button" data-recap="month">${lic('cal')}Monthly recap</button></div>` : ''}
       `;
   }
 
@@ -2058,14 +2066,32 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   let storyRows = null;
   const ptsFrom = o => o.ff ? {w: 3, l: 0} : {w: 3 + (playedUp(o) ? 1 : 0), l: o.close ? 2 : 1};
   // one short line when the score tells a story; worked out from the score, nobody types it
-  function storyOf(m, o){ if (!o || o.ff || o.ret) return ''; const S = o.sets, wins = S.filter(([a, b]) => a > b).length;
-    const tb = S.some(([a, b]) => (a === 7 && b === 6) || (a === 6 && b === 7)) || S.some(([a, b], i) => Math.max(a, b) >= 10 && Math.abs(a - b) === 2 && (S.length === 3 ? i === 2 : true)) || (S.length === 1 && Math.abs(S[0][0] - S[0][1]) === 1);
-    if (S.length > 1 && S[0][0] < S[0][1]) return 'Came back from a set down';
-    if (tb) return 'Tiebreak thriller';
+  // a tiebreak set: 7-6, 9-8 (8-game pro set), 11-10 (10-game pro set), 4-3 (mini), or the 3rd-set match tiebreak. 10-8 is close, not a tiebreak.
+  const tbSet = (S, i) => { const [a, b] = S[i], hi = Math.max(a, b), lo = Math.min(a, b); return (S.length === 3 && i === 2 && hi >= 10) || (hi - lo === 1 && [4, 7, 9, 11].includes(hi)); };
+  // what each match meant when it was played: a first win, a win streak, a streak snapped, revenge for the last meeting
+  let storyCx = null;
+  function storyCtx(){ if (storyCx) return storyCx; const cx = {}, run = {}, wins = {}, last = {};
+    chrono().forEach(m => { const o = outcome(m), k = [o.w, o.l].sort().join('|');
+      cx[m.id] = {first: !wins[o.w] && !o.ff, snap: run[o.l] || 0, rev: last[k] === o.l};
+      wins[o.w] = (wins[o.w] || 0) + 1; run[o.w] = (run[o.w] || 0) + 1; run[o.l] = 0; cx[m.id].run = run[o.w]; last[k] = o.w; });
+    storyCx = cx; setTimeout(() => { storyCx = null; }, 0); return cx; }
+  function storyOf(m, o){ if (!o || o.ff || o.ret) return ''; const S = o.sets, wins = S.filter(([a, b]) => a > b).length, cx = storyCtx()[m.id] || {};
+    const back = S.length > 1 && S[0][0] < S[0][1];
+    if (playedUp(o)) return back ? 'Upset comeback ⚔️' : 'Upset ⚔️';
+    if (cx.snap >= 3) return `Snapped a ${cx.snap}-match win streak`;
+    if (back) return 'Came back from a set down';
+    if (S.length === 3 && Math.max(...S[2]) >= 10) return 'Won the super tiebreak';
+    if (S.some((x, i) => tbSet(S, i))) return 'Tiebreak thriller';
+    if (S.length === 1 && Math.max(...S[0]) >= 10 && Math.abs(S[0][0] - S[0][1]) === 2) return 'Down to the wire';
     const rows = storyRows || standings(), rk = id => rows.findIndex(r => r.id === id) + 1, lr = rk(o.l), wr = rk(o.w);
     if (S.length === 2 && wins === 2 && lr && lr <= 3 && wr > lr && rows[lr - 1].mp) return `Straight-sets win over the #${lr}`;
     const z = S.filter(([a, b]) => b === 0 && a >= 6).length; if (z >= 2) return 'Double bagel 🥯🥯'; if (z) return 'Bagel 🥯';
     if (S.some(([a, b]) => b === 1 && a >= 6)) return 'Breadstick 🥖';
+    if (cx.run >= 3) return `${cx.run} wins in a row 🔥`;
+    if (cx.first) return 'First league win 🎉';
+    if (cx.rev) return 'Revenge win';
+    if (S.length === 1 && S[0][0] - S[0][1] >= 7) return 'Statement win 💪';
+    if (S.length === 3) return 'Went the distance';
     return ''; }
   const LI = {
     cal: '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
@@ -2206,7 +2232,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     return Object.entries(n).filter(([, k]) => k >= 3).sort((a, b) => b[1] - a[1]); }
   function funStats(id){ let bag = 0, bread = 0, tbw = 0, cb = 0, long = 0, t3w = 0, t3 = 0, big = null;
     chrono().forEach(m => { const o = outcome(m); if (!o || o.ff || (m.a !== id && m.b !== id)) return; const won = o.w === id, S = won ? o.sets : o.sets.map(([a, b]) => [b, a]);
-      S.forEach(([a, b], i) => { if (a >= 6 && b === 0) bag++; if (a >= 6 && b === 1) bread++; if ((a === 7 && b === 6) || (a >= 10 && a - b === 2) || (S.length === 3 && i === 2 && a >= 10 && a > b)) tbw++; });
+      S.forEach(([a, b], i) => { if (a >= 6 && b === 0) bag++; if (a >= 6 && b === 1) bread++; if (a > b && tbSet(S, i)) tbw++; });
       if (won && o.sets.length > 1 && o.sets[0][0] < o.sets[0][1]) cb++; long = Math.max(long, o.wg + o.lg);
       if (o.sets.length === 3) { t3++; if (won) t3w++; } if (won) { const mg = o.wg - o.lg; if (!big || mg > big.mg) big = {mg, sc: setText(o.sets), op: o.l}; } });
     const L = [bag && ['🥯', bag === 1 ? 'Bagel served' : 'Bagels served', bag], bread && ['🥖', bread === 1 ? 'Breadstick' : 'Breadsticks', bread], tbw && ['🎯', 'Tiebreaks won', tbw], cb && ['🔁', cb === 1 ? 'Comeback' : 'Comebacks', cb],
@@ -2435,7 +2461,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   function renderAdmin(){
     const L = state.league, P = state.players;
     const opts = sel => `<option value="">Choose…</option>` + P.map(p => `<option value="${p.id}" ${sel===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
-    return `<div><h2>Commissioner</h2></div>${liveHtml()}${FBL.subs.length ? inboxHtml() : ''}${backupHtml()}${inviteHtml()}
+    return `<div><h2>Commissioner</h2></div>${liveHtml()}${FBL.subs.length ? inboxHtml() : ''}${backupHtml()}${inviteHtml()}<section class="card rc-card"><h3>Recaps for the group chat</h3><p class="hint">A set of images to swipe through: standings, match of the week, the numbers and more.</p><div class="row"><button type="button" class="btn pri" data-recap="week">Weekly recap</button><button type="button" class="btn" data-recap="month">Monthly recap</button></div></section>
       <div class="card logcard"><h3>Log a match</h3>
         ${P.length < 2 ? `<p class="hint">Add at least 2 players to the roster first.</p>` : `
         <form id="log-form" style="display:grid;gap:16px">
@@ -2639,10 +2665,11 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   const FA = '"Archivo Black", "Arial Black", sans-serif', FY = '"Yellowtail", cursive', FB = '"Atkinson Hyperlegible", system-ui, sans-serif';
   const FSr = n => `italic ${n}px "Instrument Serif", Georgia, serif`;
   async function shFonts(){ try { await Promise.all(['110px "Archivo Black"', '96px "Yellowtail"', 'italic 44px "Instrument Serif"', '700 32px "Atkinson Hyperlegible"'].map(f => document.fonts.load(f))); } catch(_) {} }
-  const seasonTag = () => { const s = (state.league.season || '').replace(/(\d{2})(\d{2})\s*[–-]\s*(\d{2})/, (_, a, b, c) => b + '–' + c); return [s, 'Week ' + weekNo()].filter(Boolean).join(' · '); };
-  function weekNo(){ const mon = d => { const t = new Date(d + 'T12:00:00'); t.setDate(t.getDate() - ((t.getDay() + 6) % 7)); return t; };
+  const seasonStr = () => (state.league.season || '').replace(/(\d{2})(\d{2})\s*[–-]\s*(\d{2})/, (_, a, b, c) => b + '–' + c);
+  const seasonTag = () => [seasonStr(), 'Week ' + weekNo()].filter(Boolean).join(' · ');
+  function weekNo(at){ const mon = d => { const t = new Date(d + 'T12:00:00'); t.setDate(t.getDate() - ((t.getDay() + 6) % 7)); return t; };
     const ds = state.matches.map(m => m.date).filter(Boolean).sort(), st = state.league.startDate, first = [st, ds[0]].filter(Boolean).sort()[0];
-    if (!first || first > today()) return 1; return Math.max(1, Math.round((mon(today()) - mon(first)) / 6048e5) + 1); }
+    const ref = at || today(); if (!first || first > ref) return 1; return Math.max(1, Math.round((mon(ref) - mon(first)) / 6048e5) + 1); }
   // drawing helpers
   const shRR = (x, a, b, w, h, r) => { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); };
   const shFit = (x, txt, max, size, fam, min) => { let sz = size; do { x.font = sz + 'px ' + fam; sz -= 3; } while (x.measureText(txt).width > max && sz > (min || 24)); };
@@ -2664,11 +2691,11 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   function shBg(x, W, H, T){ const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, T.bg2); g.addColorStop(1, T.bg); x.fillStyle = g; x.fillRect(0, 0, W, H); }
   function shWaves(x, W, H, T, fmt, ph){ const wy = shWaterY(H, fmt); shWave(x, W, wy, 10, T.wave, 5, ph); shWave(x, W, wy + 22, 10, T.wave + (T.wave.length === 7 ? '88' : ''), 5, ph ? ph * .7 + 1.3 : 0); }
   // brand, season tag and the card's own content; no background, so weather can sit behind it
-  function shFrame(x, W, H, T, fmt){
+  function shFrame(x, W, H, T, fmt, tag){
     const story = fmt === 'story', by = story ? 290 : 120, cx = W / 2;
     shBall(x, cx - 182, by, 46, T); x.save(); x.translate(cx - 118, by - 10); x.rotate(-.08); shT(x, 'Lake', 0, 0, `58px ${FY}`, T.lake, 'left'); x.restore();
     shT(x, 'EFFECT', cx - 120, by + 46, `62px ${FA}`, T.ink, 'left');
-    shSp(x, 3); shT(x, seasonTag().toUpperCase(), W - 54, story ? 150 : 58, `22px ${FA}`, T.muted, 'right'); shSp(x, 0);
+    shSp(x, 3); shT(x, (tag || seasonTag()).toUpperCase(), W - 54, story ? 150 : 58, `22px ${FA}`, T.muted, 'right'); shSp(x, 0);
     return {top: by + 110, bottom: shWaterY(H, fmt) - 40};
   }
   // weather behind the card (same choices as the header button); t in ms so the clip can animate it
@@ -2796,14 +2823,199 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     const top5 = standings().filter(r => r.mp && r.id !== id).slice(0, 5).map(r => r.id), beat = new Set(wins.map(m => outcome(m).l));
     if (top5.length === 5 && top5.every(x => beat.has(x))) out.push({k: 'top5', emo: '👑', title: 'Beat the whole top 5', sub: 'Every player in the top 5, beaten'});
     return out; }
-  function improved(){ const all = state.matches, cut = new Date(Date.now() - 28 * 864e5).toISOString().slice(0, 10), was = {};
-    try { state.matches = all.filter(m => m.date && m.date <= cut); standings().forEach((r, i) => { if (r.mp) was[r.id] = i + 1; }); } catch(_) {} finally { state.matches = all; }
+  function improved(){ const all = state.matches, cut = new Date(Date.now() - 28 * 864e5).toISOString().slice(0, 10), was = {}, r0 = RAT;
+    try { state.matches = all.filter(m => m.date && m.date <= cut); standings().forEach((r, i) => { if (r.mp) was[r.id] = i + 1; }); } catch(_) {} finally { state.matches = all; RAT = r0; }
     let best = null; standings().forEach((r, i) => { if (was[r.id] && was[r.id] - (i + 1) > 0 && (!best || was[r.id] - (i + 1) > best.d)) best = {id: r.id, d: was[r.id] - (i + 1)}; }); return best; }
   function closestMatch(){ let best = null; chrono().forEach(m => { const o = outcome(m); if (o.ff || o.ret) return; const d = o.wg - o.lg; if (!best || d < best.d || (d === best.d && o.wg + o.lg > best.g)) best = {o, d, g: o.wg + o.lg}; }); return best; }
+  // ---- recaps: a set of images for the group chat, one week or one month at a time ----
+  const isoOf = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function rcRange(kind, which){ const n = new Date(); n.setHours(12, 0, 0, 0);
+    if (kind === 'week') { const a = new Date(n); a.setDate(n.getDate() - ((n.getDay() + 6) % 7) - (which === 'last' ? 7 : 0)); const b = new Date(a); b.setDate(a.getDate() + 6); return {s: isoOf(a), e: isoOf(b)}; }
+    const a = new Date(n.getFullYear(), n.getMonth() - (which === 'last' ? 1 : 0), 1, 12), b = new Date(a.getFullYear(), a.getMonth() + 1, 0, 12);
+    return {s: isoOf(a), e: isoOf(b), mo: a.getMonth(), nx: (a.getMonth() + 1) % 12}; }
+  // the league as it stood, counting only the matches that pass the test (no test = everything)
+  function rcAt(keep){ const all = state.matches, r0 = RAT;
+    try { if (keep) state.matches = all.filter(keep); const rows = standings(), rk = {}; rows.forEach((r, i) => { if (r.mp) rk[r.id] = i + 1; });
+      return {rows, rk, B: badgesAll(), A: awards(), st: Object.fromEntries(state.players.map(p => [p.id, streakOf(p.id)]))}; }
+    finally { state.matches = all; RAT = r0; } }
+  const rcHrs = mins => String(Math.round(mins / 30) / 2);
+  const rcFirst = id => first({name: pname(id)});
+  const rcNames = ids => { const f = ids.map(rcFirst); return f.length > 3 ? f.slice(0, 3).join(', ') + ' +' + (f.length - 3) : f.length > 1 ? f.slice(0, -1).join(', ') + ' & ' + f[f.length - 1] : f[0] || ''; };
+  const rcWrap = (items, max) => { const L = []; let cur = ''; items.forEach(t => { const nx = cur ? cur + '  ·  ' + t : t; if (nx.length > max && cur) { L.push(cur); cur = t; } else cur = nx; }); if (cur) L.push(cur); return L; };
+  const AW_E = {'Iron Man': '🦾', 'Social Butterfly': '🦋', 'Clutch': '🎯', 'Giant Killer': '⚔️', 'Comeback Kid': '🔁', 'Marathon Man': '⏱️'};
+  function recapSet(kind, which){ const R = rcRange(kind, which), td = today(), inP = m => m.date && m.date >= R.s && m.date <= R.e;
+    const pm = state.matches.filter(m => inP(m) && outcome(m)), pl = pm.filter(m => !outcome(m).ff); if (!pl.length) return null;
+    const A0 = rcAt(m => m.date && m.date < R.s), A1 = R.e >= td ? rcAt(null) : rcAt(m => m.date && m.date <= R.e), OKs = countedIds();
+    const wk = kind === 'week', mon = wk ? '' : MONTHS[R.mo], wn = wk ? weekNo(R.s) : 0, tag = [seasonStr(), wk ? 'Week ' + wn : mon].filter(Boolean).join(' · ');
+    const fd = (d, o) => fmtDate(d, o || {month: 'short', day: 'numeric'}), when = wk ? 'this week' : 'in ' + mon;
+    const mins = m => +m.dur > 0 ? +m.dur : 90, games = o => o.wg + o.lg;
+    const people = new Set(); pm.forEach(m => { people.add(m.a); people.add(m.b); });
+    const tot = pl.reduce((t, m) => t + mins(m), 0), cnt = {}, pts = {}, rec = {}, bag = {}; let bagN = 0;
+    pl.forEach(m => { const o = outcome(m); [m.a, m.b].forEach(id => cnt[id] = (cnt[id] || 0) + 1);
+      o.sets.forEach(([a, b], i) => { if (o.sets.length === 3 && i === 2 && Math.max(a, b) >= 10) return; if (Math.min(a, b) === 0 && Math.max(a, b) >= 6) { const id = a > b ? o.w : o.l; bag[id] = (bag[id] || 0) + 1; bagN++; } }); });
+    pm.forEach(m => { const o = outcome(m), p = OKs.has(m.id) ? ptsFrom(o) : {w: 0, l: 0}; pts[o.w] = (pts[o.w] || 0) + p.w; pts[o.l] = (pts[o.l] || 0) + p.l; (rec[o.w] = rec[o.w] || [0, 0])[0]++; (rec[o.l] = rec[o.l] || [0, 0])[1]++; });
+    const maxBy = obj => { const v = Math.max(0, ...Object.values(obj)); return {v, ids: v ? Object.keys(obj).filter(k => obj[k] === v) : []}; };
+    let climb = null; Object.keys(A1.rk).forEach(id => { if (!A0.rk[id]) return; const d = A0.rk[id] - A1.rk[id]; if (d > 0 && (!climb || d > climb.d || (d === climb.d && (pts[id] || 0) > (pts[climb.id] || 0)))) climb = {id, d, from: A0.rk[id], to: A1.rk[id]}; });
+    let since = '';
+    if (!climb && !Object.keys(A0.rk).length && !wk) { const c7 = new Date(R.s + 'T12:00:00'); c7.setDate(c7.getDate() + 6); const cut = isoOf(c7), Aw = rcAt(m => m.date && m.date <= cut);
+      Object.keys(A1.rk).forEach(id => { if (!Aw.rk[id]) return; const d = Aw.rk[id] - A1.rk[id]; if (d > 0 && (!climb || d > climb.d || (d === climb.d && (pts[id] || 0) > (pts[climb.id] || 0)))) climb = {id, d, from: Aw.rk[id], to: A1.rk[id]}; });
+      if (climb) since = 'since ' + fd(cut); }
+    const timed = pl.filter(m => +m.dur > 0), lg = (timed.length ? timed.slice().sort((a, b) => b.dur - a.dur || games(outcome(b)) - games(outcome(a))) : pl.slice().sort((a, b) => games(outcome(b)) - games(outcome(a))))[0], lo = outcome(lg);
+    const longT = ['LONGEST MATCH', timed.length ? durTxt(+lg.dur) : games(lo) + ' games', `${rcFirst(lo.w)} vs ${rcFirst(lo.l)} · ${setText(lo.sets)}`];
+    const bagT = maxBy(bag), mm = maxBy(cnt);
+    const nb = []; A1.B.forEach(b => { const was = (A0.B.find(x => x.k === b.k) || {ids: []}).ids, nw = b.ids.filter(id => !was.includes(id)); if (nw.length) nb.push({e: b.e, who: rcNames(nw), txt: 'earned ' + b.t, n: nw.length}); });
+    const nbN = nb.reduce((t, b) => t + b.n, 0);
+    const pages = [], page = (k, d) => pages.push(Object.assign({_k: k, _tag: tag}, d));
+    page('rc-cover', {lbl: wk ? 'WEEKLY RECAP' : 'MONTHLY RECAP', big: wk ? 'WEEK ' + wn : mon.toUpperCase(), range: `${fd(R.s)} – ${fd(R.e)}`,
+      tiles: [[String(pl.length), pl.length === 1 ? 'Match' : 'Matches'], [String(people.size), 'Players'], [rcHrs(tot), 'Hours on court']]});
+    if (wk) {
+      const on = A1.rows.filter(r => r.mp).slice(0, 10);
+      page('rc-table', {lbl: 'STANDINGS', sub: `Top ${on.length} after Week ${wn}`, climb: climb && climb.id, foot: climb ? `📈  Biggest climber: ${rcFirst(climb.id)}, up ${climb.d} to #${climb.to}` : '',
+        rows: on.map((r, i) => ({id: r.id, name: r.name, rank: i + 1, pts: r.pts, rec: `${r.w}–${r.l}`, mv: A0.rk[r.id] ? A0.rk[r.id] - (i + 1) : (rec[r.id] ? 'new' : 0)}))});
+      const [mw, o] = pl.map(m => [m, outcome(m)]).sort(([, a], [, b]) => (playedUp(b) - playedUp(a)) || ((a.wg - a.lg) - (b.wg - b.lg)) || (b.sets.length - a.sets.length) || (games(b) - games(a)))[0];
+      const mg = o.wg - o.lg;
+      page('rc-motw', {lbl: 'MATCH OF THE WEEK', w: o.w, l: o.l, sets: o.sets, story: storyOf(mw, o) || (o.close ? 'Down to the wire' : `Decided by ${mg} game${mg === 1 ? '' : 's'}`),
+        meta: [mw.date ? fd(mw.date, {weekday: 'short', month: 'short', day: 'numeric'}) : '', mw.loc || 'McFetridge', +mw.dur > 0 ? durTxt(+mw.dur) : ''].filter(Boolean).join('  ·  ')});
+      page('rc-nums', {lbl: 'BY THE NUMBERS', tiles: [
+        ['MOST MATCHES', String(mm.v), rcNames(mm.ids)], longT,
+        ['HOURS ON COURT', rcHrs(tot), `across ${pl.length} match${pl.length === 1 ? '' : 'es'}`],
+        ['BAGELS SERVED', String(bagN), bagN ? (bagT.ids.length === 1 ? 'Most: ' : 'Most: ') + rcNames(bagT.ids) : 'None ' + when]]});
+      const hot = Object.entries(A1.st).filter(([, n]) => n >= 3).sort((a, b) => b[1] - a[1]).slice(0, 4);
+      if (hot.length) page('rc-hot', {lbl: 'HOT HAND', rows: hot.map(([id, n]) => ({id, n}))});
+      if (nb.length) page('rc-list', {lbl: 'NEW BADGES', sub: `${nbN} earned this week`, sec: [{items: nb}]});
+    } else {
+      const pt = Object.keys(pts).sort((a, b) => pts[b] - pts[a] || rec[b][0] - rec[a][0] || (A1.rk[a] || 99) - (A1.rk[b] || 99))[0];
+      page('rc-potm', {lbl: 'PLAYER OF THE MONTH', id: pt, name: pname(pt), pts: pts[pt], rec: rec[pt], rank: A1.rk[pt] || 0, mon});
+      if (climb) page('rc-climb', {lbl: 'BIGGEST CLIMBER', id: climb.id, name: pname(climb.id), d: climb.d, from: climb.from, to: climb.to, rec: rec[climb.id] || [0, 0], mon, since: since || 'in ' + mon});
+      const pr = {}; pl.forEach(m => { const k = [m.a, m.b].sort().join('|'); (pr[k] = pr[k] || []).push(m); });
+      const best = Object.entries(pr).sort((a, b) => b[1].length - a[1].length)[0];
+      if (best && best[1].length >= 2) { const [a, b] = best[0].split('|'), all = state.matches.filter(m => outcome(m) && m.date && m.date <= R.e && [m.a, m.b].sort().join('|') === best[0]), wa = all.filter(m => outcome(m).w === a).length;
+        page('rc-rival', {lbl: 'RIVALRY OF THE MONTH', a, b, wa, wb: all.length - wa, n: best[1].length, mon,
+          games: best[1].slice().sort((x, y) => x.date.localeCompare(y.date)).slice(-4).map(m => { const o = outcome(m); return `${fd(m.date)}  ·  ${rcFirst(o.w)} ${o.ff ? 'by forfeit' : setText(o.sets)}`; })}); }
+      const ac = []; A1.A.forEach(a => { const was = (A0.A.find(x => x.t === a.t) || {ids: []}).ids, nw = a.ids.filter(id => !was.includes(id)); if (!nw.length) return;
+        const kept = was.some(id => a.ids.includes(id)); ac.push({e: AW_E[a.t] || '🏆', who: rcNames(nw), txt: (kept ? 'tied for ' : was.length ? 'took over ' : 'claimed ') + a.t, sub: a.max + ' ' + a.u}); });
+      if (ac.length || nb.length) { const room = 8, a2 = ac.slice(0, 5), b2 = nb.slice(0, Math.max(0, room - a2.length));
+        page('rc-list', {lbl: 'BADGES & AWARDS', sub: `New ${when}`, more: nb.length - b2.length, sec: [a2.length && {h: 'SEASON AWARDS', items: a2}, b2.length && {h: 'NEW BADGES', items: b2}].filter(Boolean)}); }
+      const days = {}; pl.forEach(m => days[m.date] = (days[m.date] || 0) + 1); const bd = Object.entries(days).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0], n3 = pl.filter(m => outcome(m).sets.length === 3).length;
+      page('rc-nums', {lbl: 'MONTH IN NUMBERS', tiles: [
+        ['BUSIEST DAY', fd(bd[0], {weekday: 'short', month: 'short', day: 'numeric'}), `${bd[1]} match${bd[1] === 1 ? '' : 'es'}`], longT,
+        ['MOST BAGELS', String(bagT.v), bagT.v ? rcNames(bagT.ids) : 'Nobody ' + when],
+        ['THREE-SETTERS', String(n3), n3 ? `${Math.round(n3 / pl.length * 100)}% of matches` : 'None ' + when]]});
+      const done = R.e < td, left = Math.round((new Date(R.e + 'T12:00:00') - new Date(td + 'T12:00:00')) / 864e5) + 1;
+      const yet = A1.rows.filter(r => !r.mp).map(r => r.name), quiet = A1.rows.filter(r => r.mp && !people.has(r.id)).map(r => r.name);
+      page('rc-ahead', {lbl: 'LOOKING AHEAD', big: done ? MONTHS[R.nx].toUpperCase() : `${left} DAY${left === 1 ? '' : 'S'} LEFT`, script: done ? 'starts now' : 'in ' + mon,
+        top: A1.rows.filter(r => r.mp).slice(0, 3).map((r, i) => ({id: r.id, name: r.name, rank: i + 1, pts: r.pts})),
+        yh: yet.length ? 'YET TO PLAY' : quiet.length ? 'NO MATCHES ' + (wk ? 'THIS WEEK' : 'IN ' + mon.toUpperCase()) : '', lines: rcWrap(yet.length ? yet : quiet, 44).slice(0, 3)});
+    }
+    pages.forEach((p, i) => p._pg = [i + 1, pages.length]);
+    return {pages, name: wk ? 'week-' + wn : mon.toLowerCase()}; }
+  // drawing
+  const rcLbl = (x, T, t, y) => { shSp(x, 12); shT(x, t, 546, y || 40, `30px ${FA}`, T.wave); shSp(x, 0); };
+  const rcCtr = (x, txt, y, max, size, fam, col, min) => { shFit(x, txt, max, size, fam, min); x.fillStyle = col; x.textAlign = 'center'; x.fillText(txt, 540, y); };
+  function rcTile(x, T, bx, by, w, h, k, v, sub){ shRR(x, bx, by, w, h, 28); x.fillStyle = T.panel; x.fill();
+    shSp(x, 4); shT(x, k, bx + w / 2 + 2, by + 58, `24px ${FA}`, T.muted); shSp(x, 0);
+    shFit(x, v, w - 56, 96, FA, 36); x.fillStyle = T.ink; x.textAlign = 'center'; x.fillText(v, bx + w / 2, by + h / 2 + 44);
+    if (sub) { shFit(x, sub, w - 56, 30, FB, 18); x.fillStyle = T.sub; x.fillText(sub, bx + w / 2, by + h - 42); } }
+  function rcPill(x, T, txt, y){ x.font = `34px ${FA}`; const w = Math.min(980, x.measureText(txt).width + 76); shRR(x, 540 - w / 2, y, w, 72, 36); x.fillStyle = T.band; x.fill(); shFit(x, txt, w - 60, 34, FA, 20); x.fillStyle = T.bandInk; x.textAlign = 'center'; x.fillText(txt, 540, y + 49); }
+  function rcRow(x, T, y, it){ shRR(x, 60, y, 960, 86, 24); x.fillStyle = T.panel; x.fill();
+    shT(x, it.e, 116, y + 60, `46px "Apple Color Emoji","Segoe UI Emoji",sans-serif`, T.ink);
+    const subW = it.sub ? (x.font = `26px ${FB}`, x.measureText(it.sub).width + 20) : 0;
+    shFit(x, it.who, 330, 36, FA, 22); x.fillStyle = T.ink; x.textAlign = 'left'; x.fillText(it.who, 168, y + 56); const ww = x.measureText(it.who).width;
+    shFit(x, it.txt, Math.max(120, 980 - subW - (184 + ww)), 32, FB, 18); x.fillStyle = T.sub; x.fillText(it.txt, 184 + ww, y + 56);
+    if (it.sub) shT(x, it.sub, 990, y + 55, `26px ${FB}`, T.muted, 'right'); }
+  const rcListH = d => 140 + d.sec.reduce((t, s) => t + (s.h ? 58 : 0) + s.items.length * 100, 0) + (d.more > 0 ? 60 : 0);
+  Object.assign(CARDS, {
+    'rc-cover': {t: 'Recap', h: () => 680, draw(x, T, d){ rcLbl(x, T, d.lbl, 40); rcCtr(x, d.big, 226, 980, 176, FA, T.ink, 60);
+      x.save(); x.translate(540, 330); x.rotate(-.05); shT(x, 'on the lake', 0, 0, `108px ${FY}`, T.lake); x.restore();
+      shT(x, d.range, 540, 416, `40px ${FB}`, T.sub);
+      d.tiles.forEach(([v, k], i) => { const bx = 60 + i * 330; shRR(x, bx, 470, 300, 200, 28); x.fillStyle = T.panel; x.fill(); shFit(x, v, 260, 86, FA, 40); x.fillStyle = i === 0 ? T.hi : T.ink; x.textAlign = 'center'; x.fillText(v, bx + 150, 590); shT(x, k, bx + 150, 638, `28px ${FB}`, T.muted); }); }},
+    'rc-table': {t: 'Recap', h: d => 150 + d.rows.length * 92 + (d.foot ? 70 : 0), draw(x, T, d){ rcLbl(x, T, d.lbl, 40); shT(x, d.sub, 540, 106, FSr(46), T.sub);
+      d.rows.forEach((r, i) => { const y = 140 + i * 92; shRR(x, 60, y, 960, 80, 22); x.fillStyle = T.panel; x.fill(); if (r.id === d.climb) { x.lineWidth = 4; x.strokeStyle = T.hi; x.stroke(); }
+        shT(x, String(r.rank), 118, y + 56, `44px ${FA}`, i === 0 ? T.hi : T.ink); shAv(x, r.id, 200, y + 40, 28, T);
+        shFit(x, r.name, 430, 38, FA, 22); x.fillStyle = T.ink; x.textAlign = 'left'; x.fillText(r.name, 246, y + 42); shT(x, r.rec, 246, y + 70, `22px ${FB}`, T.muted, 'left');
+        if (r.mv === 'new') { shSp(x, 3); shT(x, 'NEW', 776, y + 52, `22px ${FA}`, T.wave); shSp(x, 0); } else if (r.mv) shT(x, (r.mv > 0 ? '▲' : '▼') + Math.abs(r.mv), 776, y + 54, `32px ${FA}`, r.mv > 0 ? T.up : T.dn);
+        shT(x, String(r.pts), 975, y + 50, `44px ${FA}`, i === 0 ? T.hi : T.ink, 'right'); shT(x, 'pts', 975, y + 72, `20px ${FB}`, T.muted, 'right'); });
+      if (d.foot) { const y = 140 + d.rows.length * 92 + 46; shFit(x, d.foot, 960, 34, FB, 20); x.fillStyle = T.ink; x.textAlign = 'center'; x.fillText(d.foot, 540, y); } }},
+    'rc-motw': {t: 'Recap', h: () => 800, draw(x, T, d){ rcLbl(x, T, d.lbl, 40);
+      shAv(x, d.w, 290, 200, 104, T); shAv(x, d.l, 790, 200, 104, T); shT(x, 'd.', 540, 226, FSr(68), T.muted);
+      [[d.w, 290, T.ink, 54], [d.l, 790, T.muted, 46]].forEach(([id, cx, col, sz]) => { shFit(x, pname(id), 440, sz, FA, 24); x.fillStyle = col; x.textAlign = 'center'; x.fillText(pname(id), cx, 384); });
+      const n = d.sets.length, bw = n === 1 ? 440 : n === 2 ? 320 : 280, gap = 28, x0 = 540 - (n * bw + (n - 1) * gap) / 2;
+      d.sets.forEach(([a, b], i) => { const bx = x0 + i * (bw + gap); shRR(x, bx, 432, bw, 172, 30); x.fillStyle = T.panel; x.fill(); shFit(x, `${a}–${b}`, bw - 44, n === 1 ? 130 : 100, FA, 40); x.fillStyle = a > b ? T.hi : T.sub; x.textAlign = 'center'; x.fillText(`${a}–${b}`, bx + bw / 2, 560); });
+      rcPill(x, T, d.story, 636); if (d.meta) { shFit(x, d.meta, 960, 32, FB, 20); x.fillStyle = T.muted; x.textAlign = 'center'; x.fillText(d.meta, 540, 774); } }},
+    'rc-nums': {t: 'Recap', h: () => 800, draw(x, T, d){ rcLbl(x, T, d.lbl, 40);
+      d.tiles.forEach(([k, v, sub], i) => rcTile(x, T, i % 2 ? 555 : 60, i < 2 ? 100 : 445, 465, 325, k, v, sub)); }},
+    'rc-hot': {t: 'Recap', h: d => 300 + d.rows.length * 150, draw(x, T, d){ rcLbl(x, T, d.lbl, 40);
+      shT(x, '🔥', 540, 176, `104px "Apple Color Emoji","Segoe UI Emoji",sans-serif`, T.ink); shT(x, '3 or more wins in a row', 540, 254, FSr(46), T.sub);
+      d.rows.forEach((r, i) => { const y = 290 + i * 150; shRR(x, 60, y, 960, 130, 28); x.fillStyle = T.panel; x.fill(); shAv(x, r.id, 150, y + 65, 46, T);
+        shFit(x, pname(r.id), 520, 50, FA, 24); x.fillStyle = T.ink; x.textAlign = 'left'; x.fillText(pname(r.id), 222, y + 62); shT(x, `${r.n} wins in a row`, 222, y + 102, `30px ${FB}`, T.muted, 'left');
+        shT(x, 'W' + r.n, 975, y + 94, `84px ${FA}`, T.hi, 'right'); }); }},
+    'rc-list': {t: 'Recap', h: rcListH, draw(x, T, d){ rcLbl(x, T, d.lbl, 40); shT(x, d.sub, 540, 106, FSr(46), T.sub); let y = 140;
+      d.sec.forEach(s => { if (s.h) { shSp(x, 6); shT(x, s.h, 66, y + 36, `22px ${FA}`, T.muted, 'left'); shSp(x, 0); y += 58; } s.items.forEach(it => { rcRow(x, T, y, it); y += 100; }); });
+      if (d.more > 0) shT(x, `+ ${d.more} more badge${d.more === 1 ? '' : 's'}`, 540, y + 40, `32px ${FB}`, T.muted); }},
+    'rc-potm': {t: 'Recap', h: () => 880, draw(x, T, d){ rcLbl(x, T, d.lbl, 40); shAv(x, d.id, 540, 236, 150, T);
+      rcCtr(x, d.name.toUpperCase(), 486, 960, 92, FA, T.ink, 40); shT(x, '+' + d.pts + ' pts', 540, 636, `132px ${FA}`, T.hi); shT(x, 'in ' + d.mon, 540, 706, FSr(54), T.sub);
+      shT(x, [`${d.rec[0]}–${d.rec[1]} this month`, d.rank ? 'now #' + d.rank : ''].filter(Boolean).join('  ·  '), 540, 804, `38px ${FB}`, T.ink); }},
+    'rc-climb': {t: 'Recap', h: () => 860, draw(x, T, d){ rcLbl(x, T, d.lbl, 40); shAv(x, d.id, 540, 206, 120, T);
+      rcCtr(x, d.name.toUpperCase(), 418, 960, 84, FA, T.ink, 40);
+      shT(x, '#' + d.from, 330, 616, `140px ${FA}`, T.muted); shT(x, '→', 540, 600, `100px ${FA}`, T.sub); shT(x, '#' + d.to, 750, 616, `140px ${FA}`, T.hi);
+      shT(x, `▲ ${d.d} place${d.d === 1 ? '' : 's'} ${d.since}`, 540, 720, `46px ${FA}`, T.up); shT(x, `${d.rec[0]}–${d.rec[1]} this month`, 540, 800, `36px ${FB}`, T.sub); }},
+    'rc-rival': {t: 'Recap', h: d => 720 + d.games.length * 56, draw(x, T, d){ rcLbl(x, T, d.lbl, 40);
+      shAv(x, d.a, 270, 196, 100, T); shAv(x, d.b, 810, 196, 100, T); shT(x, 'VS', 540, 220, `64px ${FA}`, T.muted);
+      [[d.a, 270], [d.b, 810]].forEach(([id, cx]) => { shFit(x, pname(id), 420, 50, FA, 24); x.fillStyle = T.ink; x.textAlign = 'center'; x.fillText(pname(id), cx, 370); });
+      shT(x, `${d.n} meetings in ${d.mon}`, 540, 440, FSr(48), T.sub); shT(x, d.wa + ' – ' + d.wb, 540, 594, `150px ${FA}`, T.hi);
+      shT(x, d.wa === d.wb ? `Season series all square at ${d.wa}–${d.wb}` : `${rcFirst(d.wa > d.wb ? d.a : d.b)} leads the season series ${Math.max(d.wa, d.wb)}–${Math.min(d.wa, d.wb)}`, 540, 656, `36px ${FB}`, T.ink);
+      d.games.forEach((g, i) => shT(x, g, 540, 730 + i * 56, `30px ${FB}`, T.muted)); }},
+    'rc-ahead': {t: 'Recap', h: d => 720 + (d.yh ? 70 + d.lines.length * 50 : 60), draw(x, T, d){ rcLbl(x, T, d.lbl, 40); rcCtr(x, d.big, 176, 960, 120, FA, T.ink, 50);
+      x.save(); x.translate(540, 268); x.rotate(-.05); shT(x, d.script, 0, 0, `92px ${FY}`, T.lake); x.restore();
+      shSp(x, 6); shT(x, 'TOP 3 GOING IN', 66, 352, `22px ${FA}`, T.muted, 'left'); shSp(x, 0);
+      d.top.forEach((r, i) => { const y = 374 + i * 100; shRR(x, 60, y, 960, 86, 24); x.fillStyle = T.panel; x.fill(); shT(x, String(r.rank), 118, y + 60, `46px ${FA}`, i === 0 ? T.hi : T.ink); shAv(x, r.id, 202, y + 43, 30, T);
+        shFit(x, r.name, 560, 40, FA, 22); x.fillStyle = T.ink; x.textAlign = 'left'; x.fillText(r.name, 250, y + 57); shT(x, r.pts + ' pts', 975, y + 57, `36px ${FA}`, i === 0 ? T.hi : T.ink, 'right'); });
+      const y0 = 374 + d.top.length * 100 + 40;
+      if (d.yh) { shSp(x, 6); shT(x, d.yh, 66, y0 + 10, `22px ${FA}`, T.muted, 'left'); shSp(x, 0); d.lines.forEach((l, i) => { shFit(x, l, 960, 34, FB, 20); x.fillStyle = T.ink; x.textAlign = 'left'; x.fillText(l, 66, y0 + 64 + i * 50); }); }
+      else shT(x, 'Everyone has been on court. Keep it rolling.', 540, y0 + 30, FSr(44), T.sub); }}
+  });
+  // the recap sheet: which week or month, size, look and weather, then every image in a swipeable strip
+  let RC = null, rcFiles = [], rcUrls = [], rcTok = 0;
+  function openRecap(kind){ const d = new Date(), dflt = kind === 'week' ? ([1, 2].includes(d.getDay()) ? 'last' : 'this') : (d.getDate() <= 5 ? 'last' : 'this');
+    RC = {kind, which: dflt, fmt: SH_FMT[lsS('le-rc-fmt')] ? lsS('le-rc-fmt') : 'square', theme: lsS('le-shr-th') || 'dark', wx: WX.some(w => w[0] === lsS('le-shr-wx')) ? lsS('le-shr-wx') : wxNow()};
+    const per = kind === 'week' ? [['this', 'This week'], ['last', 'Last week']] : [['this', 'This month'], ['last', 'Last month']];
+    openSheet(kind === 'week' ? 'Weekly recap' : 'Monthly recap', `<p class="hint rc-hint">A set of images to swipe through. Share them all at once to the group chat.</p>
+      <div class="shr-opts"><div class="seg shr-seg" role="group" aria-label="Which ${kind}">${per.map(([k, l]) => `<button type="button" data-rc-which="${k}">${l}</button>`).join('')}</div></div>
+      <div class="shr-opts"><div class="seg shr-seg" role="group" aria-label="Size">${[['square', 'Square'], ['post', 'Post'], ['story', 'Story']].map(([k, l]) => `<button type="button" data-rc-fmt="${k}">${l}</button>`).join('')}</div><div class="seg shr-seg" role="group" aria-label="Look">${[['dark', 'Dark'], ['light', 'Light']].map(([k, l]) => `<button type="button" data-rc-th="${k}">${l}</button>`).join('')}</div></div>
+      <div class="shr-wx" role="group" aria-label="Weather">${WX.map(([k, e, l]) => `<button type="button" data-rc-wx="${k}" title="${l}"><span aria-hidden="true">${e}</span>${l}</button>`).join('')}</div><div class="rc-box"></div>`, () => ({}), 'share');
+    paintRecap(); }
+  async function paintRecap(){ if (!RC || !sheetEl) return; const tok = ++rcTok, box = sheetEl.querySelector('.rc-box'); if (!box) return;
+    [['rcWhich', RC.which, 'rc-which'], ['rcFmt', RC.fmt, 'rc-fmt'], ['rcTh', RC.theme, 'rc-th'], ['rcWx', RC.wx, 'rc-wx']].forEach(([k, v, a]) => sheetEl.querySelectorAll(`[data-${a}]`).forEach(b => b.setAttribute('aria-pressed', String(b.dataset[k] === v))));
+    rcUrls.forEach(u => URL.revokeObjectURL(u)); rcUrls = []; rcFiles = [];
+    let set = null; try { set = recapSet(RC.kind, RC.which); } catch(err) { console.error(err); }
+    if (!set) { box.innerHTML = `<div class="empty">No matches ${RC.kind === 'week' ? (RC.which === 'this' ? 'this week' : 'last week') : (RC.which === 'this' ? 'this month' : 'last month')} yet.</div>`; return; }
+    box.innerHTML = `<div class="shr-wait">${bobber(40)}<p class="hint">Making ${set.pages.length} images…</p></div>`;
+    await shFonts(); const files = [], urls = [];
+    for (let i = 0; i < set.pages.length; i++) { const p = set.pages[i]; const blob = await new Promise(r => cardCanvas(p._k, p, RC.fmt, RC.theme, RC.wx).toBlob(r, 'image/png'));
+      if (tok !== rcTok || !sheetEl) { urls.forEach(u => URL.revokeObjectURL(u)); return; } if (!blob) continue;
+      files.push(new File([blob], `lake-effect-${set.name}-${i + 1}-${p._k.slice(3)}.png`, {type: 'image/png'})); urls.push(URL.createObjectURL(blob)); }
+    const b2 = sheetEl.querySelector('.rc-box'); if (!b2) return; rcFiles = files; rcUrls = urls;
+    const can = !!(navigator.canShare && navigator.canShare({files}));
+    b2.innerHTML = `<div class="rc-strip shr-${RC.fmt}" tabindex="0" aria-label="Recap images, swipe to see them all">${urls.map((u, i) => `<img src="${u}" alt="Recap image ${i + 1} of ${urls.length}" class="shr-img">`).join('')}</div>
+      <p class="hint rc-count">${urls.length} images · swipe to see them all</p>
+      <div class="row">${can ? `<button type="button" class="btn pri" data-rc-share="1">Share all ${urls.length}</button>` : ''}<button type="button" class="btn${can ? '' : ' pri'}" data-rc-save="1">Save all</button></div>`; }
+  document.addEventListener('click', e => { const t = e.target.closest && e.target.closest('[data-recap],[data-rc-which],[data-rc-fmt],[data-rc-th],[data-rc-wx],[data-rc-share],[data-rc-save]'); if (!t) return;
+    if (t.dataset.recap) { openRecap(t.dataset.recap); return; }
+    if (!RC) return;
+    if (t.dataset.rcShare) { if (rcFiles.length) navigator.share({files: rcFiles, title: 'Lake Effect Tennis Club'}).catch(() => {}); return; }
+    if (t.dataset.rcSave) { rcFiles.forEach((f, i) => setTimeout(() => { const a = document.createElement('a'), u = URL.createObjectURL(f); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }, i * 400)); return; }
+    if (t.dataset.rcWhich) RC.which = t.dataset.rcWhich;
+    else if (t.dataset.rcFmt) { RC.fmt = t.dataset.rcFmt; lsS('le-rc-fmt', RC.fmt); }
+    else if (t.dataset.rcTh) { RC.theme = t.dataset.rcTh; lsS('le-shr-th', RC.theme); }
+    else if (t.dataset.rcWx) { RC.wx = t.dataset.rcWx; lsS('le-shr-wx', RC.wx); }
+    paintRecap(); });
   // the card's own layer: brand, tag and content on a clear background
   function cardLayer(kind, data, fmt, theme){ const [W, H] = SH_FMT[fmt] || SH_FMT.post, T = SH_TH[theme] || SH_TH.dark, C = CARDS[kind];
     const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'); x.textBaseline = 'alphabetic';
-    const box = shFrame(x, W, H, T, fmt), dh = C.h(data), sc = Math.min(1, (box.bottom - box.top) / dh, W / 1080);
+    const box = shFrame(x, W, H, T, fmt, data && data._tag), dh = C.h(data);
+    if (data && data._pg) { shSp(x, 3); shT(x, data._pg.join(' / '), 54, fmt === 'story' ? 150 : 58, `22px ${FA}`, T.muted, 'left'); shSp(x, 0); }
+    const sc = Math.min(1, (box.bottom - box.top) / dh, W / 1080);
     x.save(); x.translate((W - 1080 * sc) / 2, box.top + ((box.bottom - box.top) - dh * sc) / 2); x.scale(sc, sc); C.draw(x, T, data); x.restore(); return c; }
   function cardCanvas(kind, data, fmt, theme, wx){ const L = cardLayer(kind, data, fmt, theme), W = L.width, H = L.height, T = SH_TH[theme] || SH_TH.dark;
     const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
