@@ -3282,13 +3282,15 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
       pre.hidden = !cur.msg || !!cur.err; pre.textContent = cur.msg || '';
       if (!cur.msg || cur.err) { acts.innerHTML = ''; acts.dataset.h = ''; note.textContent = ''; return; }
       const cn = state.league.commissioner || 'the commissioner';
-      const ah = art ? (cur.apply ? `<button type="button" class="btn" data-act="apply">Add to the site</button>` : '')
+      const own = !!(FBL.user && myPid() && cur.go); // your own score posts like everyone else's, even for a commissioner
+      const ah = own ? `<button type="button" class="btn" data-act="go">${esc(cur.goL || 'Post it')}</button>`
+        : art ? (cur.apply ? `<button type="button" class="btn" data-act="apply">Add to the site</button>` : '')
         : FBL.user && myPid() && cur.go ? `<button type="button" class="btn" data-act="go">${esc(cur.goL || 'Post it')}</button>`
         : FBL.user && FBL.me ? `<button type="button" class="btn" data-act="send">Send to ${esc(cn)}</button>`
         : FBL.user ? `<p class="hint" style="margin:0">Pick which player you are at the top of the page, then send it.</p>`
         : `<button type="button" class="btn" data-acct="1">Sign in to send it</button><button type="button" class="btn ghost" data-act="copy">Copy message</button>`;
       if (acts.dataset.h !== ah) { acts.dataset.h = ah; acts.innerHTML = ah; }
-      note.textContent = art ? 'Adds it straight to the site for everyone.' : FBL.user && myPid() && cur.go ? (cur.goNote || 'Shows up for everyone right away.') : FBL.user ? `${cn} gets it right away and approves it, then it shows up for everyone.` : (cur.note || '');
+      note.textContent = own ? (cur.goNote || 'Shows up for everyone right away.') : art ? 'Adds it straight to the site for everyone.' : FBL.user && myPid() && cur.go ? (cur.goNote || 'Shows up for everyone right away.') : FBL.user ? `${cn} gets it right away and approves it, then it shows up for everyone.` : (cur.note || '');
     };
     root.addEventListener('input', refresh); root.addEventListener('change', refresh);
     sheetEl.addEventListener('click', e => {
@@ -3302,7 +3304,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
     refresh();
     const f = root.querySelector('select:not([disabled]), input'); if (f && matchMedia('(pointer:fine)').matches) f.focus();
   }
-  const meId = () => !art && FBL.user && myPid() ? myPid() : '';
+  const meId = () => FBL.user && myPid() ? myPid() : '';
   const whoSel = (id, sel, blank, skip) => meId() ? `<select id="${id}" disabled>${playerOpts(meId())}</select>` : `<select id="${id}">${playerOpts(sel || '', blank, skip)}</select>`;
   const isMcF = l => !l || /^mcfetridge/i.test(String(l).trim());
   const LOC_ALIAS = {'waveland south': 'Waveland'}; // other names people typed for the same courts
