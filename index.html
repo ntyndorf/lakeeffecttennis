@@ -1850,7 +1850,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
 .bd-med{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;font-size:26px;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--tabc,#F5C542) 40%,var(--surface2)),var(--surface2));box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--tabc,#F5C542) 45%,transparent);filter:grayscale(.85);opacity:.75}
 .bd.have .bd-med,.bd:has(.bd-who .aw-faces) .bd-med{filter:none;opacity:1}
 .bd-body{display:grid;gap:4px;min-width:0}.bd-body b{font-size:16px}
-.bd-yes{display:inline-block;margin-left:4px;padding:1px 8px;border-radius:99px;background:var(--win,#4CC38A);color:#0B1B2B;font:800 11px/1.6 var(--body);vertical-align:2px}
+.bd-yes{display:inline-grid;place-items:center;width:20px;height:20px;margin-left:6px;border-radius:50%;background:var(--win,#4CC38A);vertical-align:-3px}.bd-yes svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 .bd.have{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tabc,#F5C542) 55%,transparent),0 10px 24px -8px rgba(0,0,0,.55)!important}
 .bd-who{display:flex;align-items:center;gap:8px;margin-top:4px}.bd-who>i{font-style:normal;font-size:12.5px;color:var(--muted)}
 /* six tabs on a phone: tighter labels */
@@ -2034,7 +2034,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     const nm = ids => ids.slice(0, 2).map(id => `<button type="button" class="plink" data-player="${id}">${esc(pname(id))}</button>`).join(' & ') + (ids.length > 2 ? ` <i>+${ids.length - 2}</i>` : '');
     const path = (a, P) => { if (!me) return ''; const step = a.t === 'Iron Lung' ? .5 : 1, v = (a.vals || {})[me] || 0, u = n => unit(n, a.u), mo = n => { const t = unit(n, a.u), k = t.indexOf(' '); return t.slice(0, k) + ' more' + t.slice(k); }, at = P.find(p => p.ids.includes(me));
       if (!P.length) return `<p class="aw-me">Nobody's on the board yet. ${u(step)} takes #1.</p>`;
-      if (at && at.rk === 1 && at.ids.length === 1) return `<p class="aw-me yes">🏆 You're #1${P[1] ? ` · ${u(v - P[1].v)} ahead of #2` : ''}</p>`;
+      if (at && at.rk === 1 && at.ids.length === 1) return `<p class="aw-me yes">You're #1${P[1] ? ` · ${u(v - P[1].v)} ahead of #2` : ''}</p>`;
       const out = [at ? (at.ids.length > 1 ? `You're tied for #${at.rk}` : `You're #${at.rk}`) : `You: ${u(v)}`];
       if (at && at.rk === 1) out.push(`<b>${mo(step)}</b> to take it outright`);
       else { const last = P[P.length - 1];
@@ -2045,12 +2045,12 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     const got = B.filter(b => me && b.ids.includes(me)).length;
     return `<div><h2>Awards</h2><p class="sub">Season awards go to whoever leads each category right now. Badges are yours to keep once you earn them.</p></div>
       <section class="aw-sec"><h3>Season awards</h3><div class="aw-grid">${A.map(a => `<div class="card aw">
-        <div class="aw-top"><span class="aw-ic">${icon(a.t)}</span><span><b>${esc(a.t)}</b><span class="aw-d">${esc(a.d)}</span></span></div>
+        <div class="aw-top"><span class="aw-ic">${icon(a.t)}</span><span><b>${esc(a.t)}${me && a.ids.includes(me) ? ' <span class="bd-yes" role="img" aria-label="You hold this"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9"/></svg></span>' : ''}</b><span class="aw-d">${esc(a.d)}</span></span></div>
         ${(() => { const P = places(a); return (P.length ? `<ol class="aw-pl">${P.map(p => `<li class="aw-p r${p.rk}${me && p.ids.includes(me) ? ' me' : ''}"><span class="aw-rk">#${p.rk}</span>${faces(p.ids.slice(0, 2))}<span class="aw-pn">${nm(p.ids)}</span><b class="aw-pv">${esc(unit(p.v, a.u))}</b></li>`).join('')}</ol>` : '<span class="aw-open">Up for grabs</span>') + path(a, P); })()}
       </div>`).join('')}</div></section>
       <section class="aw-sec"><h3>Badges${me ? ` <span class="aw-count">${got} of ${B.length} earned</span>` : ''}</h3><div class="bd-list">${B.map(b => { const have = me && b.ids.includes(me); return `<div class="card bd${have ? ' have' : ''}">
         <span class="bd-med" aria-hidden="true">${b.e}</span>
-        <div class="bd-body"><b>${esc(b.t)}${have ? ' <span class="bd-yes">✓ Yours</span>' : ''}</b><span class="aw-d">${esc(b.d)}</span>
+        <div class="bd-body"><b>${esc(b.t)}${have ? ' <span class="bd-yes" role="img" aria-label="Earned"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9"/></svg></span>' : ''}</b><span class="aw-d">${esc(b.d)}</span>
           <div class="bd-who">${b.ids.length ? `${faces(b.ids)}<i>${b.ids.length} player${b.ids.length === 1 ? '' : 's'}</i>` : '<span class="aw-open">Nobody yet. Be the first.</span>'}</div></div></div>`; }).join('')}</div></section>`;
   }
 
