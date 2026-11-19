@@ -1902,6 +1902,16 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
 @media (max-width:400px){.pfree{grid-template-columns:minmax(0,1fr)}.pfree .fnote{grid-column:1}.pfree .pmk{padding-top:0}}
 .bdt{grid-template-columns:repeat(auto-fill,minmax(min(130px,100%),1fr))}
 .morestats,.morestats>.card{min-width:0;max-width:100%;box-sizing:border-box}
+
+.bd-gh{display:flex;justify-content:space-between;align-items:baseline;margin:10px 2px 0;font:800 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}.bd-gh span{letter-spacing:.04em;font-weight:700}
+
+/* commissioner score log */
+.slog-tools{justify-content:space-between;align-items:center}
+.slog{list-style:none;margin:8px 16px 0!important;padding:0;display:grid}
+.slog-r{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'t st' 'm m';gap:2px 10px;padding:10px 0;border-top:1px solid var(--line)}
+.slog-r.off{opacity:.55}.slog-r.off .slog-m b,.slog-r.off .slog-sc{text-decoration:line-through}
+.slog-t{grid-area:t;font-size:12.5px;color:var(--muted)}.slog-st{grid-area:st;font-size:12px;font-weight:700;color:var(--win,#4CC38A)}.slog-st.disputed{color:var(--loss,#F49A8E)}.slog-st.removed{color:var(--muted)}
+.slog-m{grid-area:m;font-size:14px;min-width:0}.slog-sc{font-weight:700}.slog-m i{display:block;font-style:normal;font-size:12.5px;color:var(--muted);margin-top:2px}
 </style><link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&amp;family=Atkinson+Hyperlegible:wght@400;700&amp;family=Archivo+Black&amp;family=Yellowtail&amp;family=Instrument+Serif:ital@0;1&amp;display=swap"><div class="wrap" id="app"></div><script type="application/json" id="league-data">{"league":{"name":"McFetridge Winter Singles","season":"Winter 2026–27","venue":"McFetridge Sports Center","address":"3843 N California Ave","level":"3.0–3.5","startDate":"2026-11-01","endDate":"","tipUrl":"https://venmo.com/u/nicktyndorf","commissioner":"Nick","draft":false,"news":"","newsDate":"2026-10-09"},"players":[{"id":"5u76dri","name":"Nick T","level":"3.0","prof":{"plays":"Righty","bh":"Two-handed","shot":"Inside-out forehand","pro":"Daniil Medvedev"},"ph":1},{"id":"p5onhu0","name":"Spencer C","level":"3.25","ph":1},{"id":"wd1jmau","name":"Brendan O","level":"3.0","ph":1},{"id":"ata2iuw","name":"Tim S","level":"3.0","ph":1},{"id":"sxkx0ga","name":"Emmett F","level":"3.0","ph":1},{"id":"prz4fd6","name":"Mohammed F","level":"3.5","ph":1},{"id":"67cu010","name":"Vitaliy B","level":"3.25","ph":1},{"id":"vswai94","name":"Luke H","level":"3.25","ph":1},{"id":"dp9j7ls","name":"Spencer P","level":"3.25","ph":1},{"id":"cuwu10i","name":"Juan G","level":"3.0","ph":1},{"id":"mfuf932","name":"Zach K","level":"3.0","ph":1},{"id":"iivf8x7","name":"Alvaro R","level":"3.0","ph":1},{"id":"wg8fb4m","name":"John W","level":"3.25","ph":1},{"id":"iev0edc","name":"Nathan H","level":"3.0","ph":1},{"id":"tm2km4c","name":"Brian K","level":"3.0","ph":1},{"id":"uu82eoc","name":"Aidan V","level":"3.0","ph":1},{"id":"w5zwbyo","name":"Salem H","level":"3.25","ph":1},{"id":"m620f34","name":"Bill J","level":"3.25","ph":1},{"id":"zwb6fo9","name":"Peter R","level":"3.0","ph":1},{"id":"4xr256c","name":"Will C","level":"3.0","ph":1}],"matches":[],"updated":"2026-10-29T18:05:36.952Z","upcoming":[]}</script><script id="page-js">
 (function(){
   const SRC = (() => { const e = document.getElementById('league-data').textContent; try { const c = localStorage.getItem('le-state'); if (c) { const cu = (JSON.parse(c) || {}).updated || '', eu = (JSON.parse(e) || {}).updated || ''; if (cu > eu) return c; } } catch(_) {} return e; })();
@@ -1974,7 +1984,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
   const avColor = id => { const i = state.players.findIndex(p => p.id === id), c = i >= 0 && state.players[i].color; return /^#[0-9a-f]{6}$/i.test(c || '') ? c : AVC[(i < 0 ? 0 : i) % AVC.length]; };
   const EMOS = ['🎾', '🔥', '⚡', '🚀', '🏆', '💪', '❄️', '🌪️', '☀️', '🌵', '🍕', '🌭', '🍩', '🐐', '🦅', '🦁', '🐯', '🐻', '🐺', '🦊', '🦈', '🐙', '🐢', '🦖', '🤖', '👻', '😎'];
   // badge pictures: earn the badge, unlock its picture (anyone already using one keeps it)
-  const BADGE_PICS = [['first', '🎉'], ['hat', '🎩'], ['bagel', '🥯'], ['ice', '🧊'], ['giant', '⚔️'], ['comeback', '🔁'], ['mingler', '🦋'], ['ten', '🔟'], ['sweep', '👑'], ['owl', '🌙'], ['regular', '🗓️'], ['perfect', '🎯'], ['blizzard', '⛄'], ['wall', '🧱']];
+  const BADGE_PICS = [['first', '🎉'], ['mingler', '🦋'], ['ten', '🔟'], ['regular', '🗓️'], ['owl', '🌙'], ['early', '🌅'], ['marathon', '⏳'], ['b2b', '🔂'], ['century', '💯'], ['hat', '🎩'], ['five', '🧨'], ['bagel', '🥯'], ['bread', '🥖'], ['dbagel', '🍳'], ['clean', '🧹'], ['giant', '⚔️'], ['giant2', '🪓'], ['perfect', '🎯'], ['sweep', '👑'], ['ice', '🧊'], ['icewater', '🧠'], ['lucky', '🍀'], ['comeback', '🔁'], ['never', '😤'], ['wall', '🧱'], ['explorer', '🗺️'], ['circle', '🤝'], ['blizzard', '⛄'], ['turkey', '🦃'], ['holiday', '🎄'], ['polar', '🥶']];
   const PICS = EMOS.concat(BADGE_PICS.map(b => b[1]));
   const emoOf = id => { const p = state.players.find(x => x.id === id); return p && PICS.includes(p.emo) ? p.emo : ''; };
   const PTYPES = ['Aggressive baseliner', 'Counterpuncher', 'All-court', 'Big server', 'Serve & volley', 'Moonballer'];
@@ -2025,33 +2035,77 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
   };
   const icon = t => ICONS[t] ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[t]}</svg>` : '';
   // badges: personal, everyone can earn each one
-  function badgesAll(){
-    const st = {}; state.players.forEach(p => st[p.id] = {w: 0, mp: 0, run: 0, best: 0, opp: new Set(), bagel: 0, clutch: 0, giant: 0, comeback: 0, beat: new Set(), night: 0, wks: new Set(), wk: {}, mo: new Set(), t3: 0});
-    chrono().forEach(m => { const o = outcome(m); if (!o || o.ff) return;
-      const late = (startOf(m) || '') >= '20:00';
-      [o.w, o.l].forEach(id => { const x = st[id]; if (!x) return; x.mp++; x.opp.add(id === o.w ? o.l : o.w); if (late) x.night++;
-        if (m.date) { const k = monOf(m.date); x.wks.add(k); const r = x.wk[k] = x.wk[k] || [0, 0]; r[id === o.w ? 0 : 1]++; x.mo.add(m.date.slice(5, 7)); } });
+  // cold days in Chicago (daily low under 10°F), kept on this device so older dates stay known
+  let COLD = (() => { try { return JSON.parse(localStorage.getItem('le-cold') || '{}') || {}; } catch(_) { return {}; } })(), coldAsked = false;
+  function coldLoad(){ if (coldAsked) return; coldAsked = true;
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=41.88&longitude=-87.63&daily=temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FChicago&past_days=92&forecast_days=1')
+      .then(r => r.json()).then(j => { const d = j && j.daily; if (!d || !d.time) return; const before = JSON.stringify(COLD), td = today();
+        d.time.forEach((t, i) => { const v = d.temperature_2m_min[i]; if (t <= td && typeof v === 'number') COLD[t] = Math.round(v); });
+        try { localStorage.setItem('le-cold', JSON.stringify(COLD)); } catch(_) {} if (JSON.stringify(COLD) !== before) render(); }).catch(() => {}); }
+  const isCold = d => d && typeof COLD[d] === 'number' && COLD[d] < 10;
+  // Thanksgiving weekend: the 4th Thursday of November through Sunday
+  const turkeyDay = d => { if (!d || d.slice(5, 7) !== '11') return false; const y = +d.slice(0, 4), f = new Date(y, 10, 1).getDay(), th = 1 + ((4 - f + 7) % 7) + 21, day = +d.slice(8, 10); return day >= th && day <= th + 3; };
+  const holidayDay = d => d && ((d.slice(5, 7) === '12' && +d.slice(8, 10) >= 25) || d.slice(5) === '01-01');
+  // badges: personal, everyone can earn each one
+  const BADGE_GROUPS = [['start', 'Getting going'], ['grind', 'Grinding'], ['win', 'Winning'], ['close', 'Close ones'], ['social', 'Social'], ['season', 'Seasonal']];
+  function badgesAll(){ coldLoad();
+    const st = {}; state.players.forEach(p => st[p.id] = {w: 0, mp: 0, run: 0, best: 0, opp: new Set(), bagel: 0, bread: 0, dbag: 0, clutch: 0, giant: 0, giant3: 0, comeback: 0, beat: new Set(), night: 0, early: 0, long: 0, wks: new Set(), wk: {}, mo: new Set(), mg: {}, days: new Set(), t3: 0, clean: 0, tbw: 0, never: 0, courts: new Set(), turkey: 0, holiday: 0, cold: 0, lucky: 0});
+    const run = {}; // points as they stood before each match, for "beat someone in the top 3 at the time"
+    chrono().forEach(m => { const o = outcome(m); if (!o || o.ff) return; const S = o.sets, tm = startOf(m) || '', g = o.wg + o.lg;
+      const on = Object.entries(run).filter(([, v]) => v.mp), lr = run[o.l], lRank = lr && lr.mp ? 1 + on.filter(([, v]) => v.pts > lr.pts).length : 0;
+      [o.w, o.l].forEach(id => { const x = st[id]; if (!x) return; x.mp++; x.opp.add(id === o.w ? o.l : o.w);
+        if (tm >= '20:00') x.night++; if (tm && tm < '08:00') x.early++; if (+m.dur >= 120) x.long++;
+        x.courts.add(isMcF(m.loc) ? 'mcfetridge' : normLoc(m.loc).toLowerCase());
+        if (m.date) { const k = monOf(m.date); x.wks.add(k); const r = x.wk[k] = x.wk[k] || [0, 0]; r[id === o.w ? 0 : 1]++; x.mo.add(m.date.slice(5, 7)); const mk = m.date.slice(0, 7); x.mg[mk] = (x.mg[mk] || 0) + g; x.days.add(m.date);
+          if (turkeyDay(m.date)) x.turkey++; if (holidayDay(m.date)) x.holiday++; if (isCold(m.date)) x.cold++; }
+        // sets this player won: tiebreaks and 7-6s count for either side
+        const mine = id === o.w ? S : S.map(([a, b]) => [b, a]); mine.forEach(([a, b], i) => { if (a > b && tbSet(mine, i)) x.tbw++; if (a === 7 && b === 6) x.lucky++; if (a >= 6 && b === 1 && !(S.length === 3 && i === 2 && Math.max(a, b) >= 10)) x.bread++; }); });
       const W = st[o.w], Lr = st[o.l];
-      if (W) { W.w++; W.run++; W.best = Math.max(W.best, W.run); W.beat.add(o.l); if (o.sets.some(([a, b]) => a >= 6 && b === 0)) W.bagel++; if (o.close) W.clutch++; if (playedUp(o)) W.giant++; if (o.sets.length > 1 && o.sets[0][0] < o.sets[0][1]) W.comeback++; if (o.sets.length === 3 && !o.ret) W.t3++; }
-      if (Lr) Lr.run = 0; });
+      if (W) { W.w++; W.run++; W.best = Math.max(W.best, W.run); W.beat.add(o.l);
+        if (S.some(([a, b]) => a >= 6 && b === 0)) W.bagel++;
+        if ((S.length === 2 && S.every(([a, b]) => a >= 6 && b === 0)) || (S.length === 1 && S[0][0] >= 8 && S[0][1] === 0)) W.dbag++;
+        if (!o.ret && o.lg <= 2) W.clean++;
+        if (o.close) W.clutch++; if (playedUp(o)) W.giant++; if (lRank && lRank <= 3 && on.length >= 6) W.giant3++;
+        if (S.length > 1 && S[0][0] < S[0][1]) W.comeback++; if (S.length === 3 && !o.ret) W.t3++;
+        if (S.length === 3 && !o.ret && S[0][0] < S[0][1] && S[2][0] === 7 && S[2][1] === 6) W.never++; }
+      if (Lr) Lr.run = 0;
+      const pw = run[o.w] = run[o.w] || {pts: 0, mp: 0}, pl = run[o.l] = run[o.l] || {pts: 0, mp: 0}; const pe = ptsFrom(o); pw.pts += pe.w; pl.pts += pe.l; pw.mp++; pl.mp++; });
     const runOf = set => { const a = [...set].sort((p, q) => p - q); let b = 0, r = 0; a.forEach((v, i) => { r = i && v === a[i - 1] + 1 ? r + 1 : 1; b = Math.max(b, r); }); return b; };
-    const top5 = standings().filter(r => r.mp).slice(0, 5).map(r => r.id);
+    const dayRun = set => { const a = [...set].sort(); return a.some((d, i) => i && Math.round((new Date(d + 'T12:00:00') - new Date(a[i - 1] + 'T12:00:00')) / 864e5) === 1); };
+    const rows = standings().filter(r => r.mp), top5 = rows.slice(0, 5).map(r => r.id), top10 = rows.slice(0, 10).map(r => r.id);
     const who = f => state.players.filter(p => st[p.id] && f(st[p.id], p.id)).map(p => p.id);
     return [
-      {k: 'first', e: '🎉', t: 'First Win', d: 'Win your first league match.', ids: who(x => x.w >= 1)},
-      {k: 'hat', e: '🎩', t: 'Hat Trick', d: 'Win 3 matches in a row at any point in the season.', ids: who(x => x.best >= 3)},
-      {k: 'bagel', e: '🥯', t: 'Bagel Baker', d: 'Win a set 6–0.', ids: who(x => x.bagel >= 1)},
-      {k: 'ice', e: '🧊', t: 'Ice Cold', d: 'Win a close one: a tiebreak, a 3rd set, or a pro set decided by 2 games or fewer.', ids: who(x => x.clutch >= 1)},
-      {k: 'giant', e: '⚔️', t: 'Giant Slayer', d: 'Beat a player rated at a higher level than you (+1 bonus point).', ids: who(x => x.giant >= 1)},
-      {k: 'comeback', e: '🔁', t: 'Comeback', d: 'Win a match after losing the first set.', ids: who(x => x.comeback >= 1)},
-      {k: 'mingler', e: '🦋', t: 'Mingler', d: 'Play 5 different opponents.', ids: who(x => x.opp.size >= 5)},
-      {k: 'ten', e: '🔟', t: 'Double Digits', d: 'Play 10 league matches.', ids: who(x => x.mp >= 10)},
-      {k: 'sweep', e: '👑', t: 'Top 5 Sweep', d: 'Beat every player currently in the top 5.', ids: top5.length === 5 ? who((x, id) => top5.filter(t => t !== id).every(t => x.beat.has(t))) : []},
-      {k: 'owl', e: '🌙', t: 'Night Owl', d: 'Play a match that starts at 8pm or later. Add the start time when you post the score.', ids: who(x => x.night >= 1)},
-      {k: 'regular', e: '🗓️', t: 'Regular', d: 'Play at least one match a week, 4 weeks in a row.', ids: who(x => runOf(x.wks) >= 4)},
-      {k: 'perfect', e: '🎯', t: 'Perfect Week', d: 'Go 3–0 or better in one week (Monday to Sunday).', ids: who(x => Object.values(x.wk).some(([w, l]) => w >= 3 && !l))},
-      {k: 'blizzard', e: '⛄', t: 'Blizzard Baller', d: 'Play in December, January and February.', ids: who(x => ['12', '01', '02'].every(k => x.mo.has(k)))},
-      {k: 'wall', e: '🧱', t: 'The Wall', d: 'Win 3 three-set matches.', ids: who(x => x.t3 >= 3)}
+      {g: 'start', k: 'first', e: '🎉', t: 'First Win', d: 'Win your first league match.', ids: who(x => x.w >= 1)},
+      {g: 'start', k: 'mingler', e: '🦋', t: 'Mingler', d: 'Play 5 different opponents.', ids: who(x => x.opp.size >= 5)},
+      {g: 'start', k: 'ten', e: '🔟', t: 'Double Digits', d: 'Play 10 league matches.', ids: who(x => x.mp >= 10)},
+      {g: 'start', k: 'regular', e: '🗓️', t: 'Regular', d: 'Play at least one match a week, 4 weeks in a row.', ids: who(x => runOf(x.wks) >= 4)},
+      {g: 'grind', k: 'owl', e: '🌙', t: 'Night Owl', d: 'Play a match that starts at 8pm or later. Add the start time when you post the score.', ids: who(x => x.night >= 1)},
+      {g: 'grind', k: 'early', e: '🌅', t: 'Early Bird', d: 'Play a match that starts before 8am. Add the start time when you post the score.', ids: who(x => x.early >= 1)},
+      {g: 'grind', k: 'marathon', e: '⏳', t: 'Marathon', d: 'Play a match that lasts 2 hours or more.', ids: who(x => x.long >= 1)},
+      {g: 'grind', k: 'b2b', e: '🔂', t: 'Back to Back', d: 'Play league matches on two days in a row.', ids: who(x => dayRun(x.days))},
+      {g: 'grind', k: 'century', e: '💯', t: 'Century', d: 'Play 100 games in one month.', ids: who(x => Object.values(x.mg).some(v => v >= 100))},
+      {g: 'win', k: 'hat', e: '🎩', t: 'Hat Trick', d: 'Win 3 matches in a row at any point in the season.', ids: who(x => x.best >= 3)},
+      {g: 'win', k: 'five', e: '🧨', t: 'Five Alive', d: 'Win 5 matches in a row.', ids: who(x => x.best >= 5)},
+      {g: 'win', k: 'bagel', e: '🥯', t: 'Bagel Baker', d: 'Win a set 6–0.', ids: who(x => x.bagel >= 1)},
+      {g: 'win', k: 'bread', e: '🥖', t: 'Breadwinner', d: 'Win a set 6–1 (a breadstick).', ids: who(x => x.bread >= 1)},
+      {g: 'win', k: 'dbagel', e: '🍳', t: 'Double Bagel', d: 'Win 6–0, 6–0, or a pro set without losing a game.', ids: who(x => x.dbag >= 1)},
+      {g: 'win', k: 'clean', e: '🧹', t: 'Clean Sweep', d: 'Win a match without losing more than 2 games.', ids: who(x => x.clean >= 1)},
+      {g: 'win', k: 'giant', e: '⚔️', t: 'Giant Slayer', d: 'Beat a player rated at a higher level than you (+1 bonus point).', ids: who(x => x.giant >= 1)},
+      {g: 'win', k: 'giant2', e: '🪓', t: 'Giant Slayer II', d: 'Beat someone who was in the top 3 when you played them.', ids: who(x => x.giant3 >= 1)},
+      {g: 'win', k: 'perfect', e: '🎯', t: 'Perfect Week', d: 'Go 3–0 or better in one week (Monday to Sunday).', ids: who(x => Object.values(x.wk).some(([w, l]) => w >= 3 && !l))},
+      {g: 'win', k: 'sweep', e: '👑', t: 'Top 5 Sweep', d: 'Beat every player currently in the top 5.', ids: top5.length === 5 ? who((x, id) => top5.filter(t => t !== id).every(t => x.beat.has(t))) : []},
+      {g: 'close', k: 'ice', e: '🧊', t: 'Ice Cold', d: 'Win a close one: a tiebreak, a 3rd set, or a pro set decided by 2 games or fewer.', ids: who(x => x.clutch >= 1)},
+      {g: 'close', k: 'icewater', e: '🧠', t: 'Ice Water', d: 'Win 3 tiebreak sets (7–6, 9–8, 11–10 or a match tiebreak).', ids: who(x => x.tbw >= 3)},
+      {g: 'close', k: 'lucky', e: '🍀', t: 'Lucky 7', d: 'Win a set 7–6.', ids: who(x => x.lucky >= 1)},
+      {g: 'close', k: 'comeback', e: '🔁', t: 'Comeback', d: 'Win a match after losing the first set.', ids: who(x => x.comeback >= 1)},
+      {g: 'close', k: 'never', e: '😤', t: 'Never Out', d: 'Lose the first set, then win a true best of 3 with a 7–6 third set.', ids: who(x => x.never >= 1)},
+      {g: 'close', k: 'wall', e: '🧱', t: 'The Wall', d: 'Win 3 three-set matches.', ids: who(x => x.t3 >= 3)},
+      {g: 'social', k: 'explorer', e: '🗺️', t: 'Explorer', d: 'Play at 3 different courts.', ids: who(x => x.courts.size >= 3)},
+      {g: 'social', k: 'circle', e: '🤝', t: 'Full Circle', d: 'Play everyone currently in the top 10.', ids: top10.length >= 10 ? who((x, id) => top10.filter(t => t !== id).every(t => x.opp.has(t))) : []},
+      {g: 'season', k: 'blizzard', e: '⛄', t: 'Blizzard Baller', d: 'Play in December, January and February.', ids: who(x => ['12', '01', '02'].every(k => x.mo.has(k)))},
+      {g: 'season', k: 'turkey', e: '🦃', t: 'Turkey Day', d: 'Play on Thanksgiving weekend (Thursday to Sunday).', ids: who(x => x.turkey >= 1)},
+      {g: 'season', k: 'holiday', e: '🎄', t: 'Holiday Hitter', d: 'Play between Christmas and New Year’s Day.', ids: who(x => x.holiday >= 1)},
+      {g: 'season', k: 'polar', e: '🥶', t: 'Polar Vortex', d: 'Play on a day Chicago’s low is under 10°F.', ids: who(x => x.cold >= 1)}
     ];
   }
   function renderAwards(){ const me = myPid(), A = awards(), B = badgesAll();
@@ -2077,10 +2131,10 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
         <div class="aw-top"><span class="aw-ic">${icon(a.t)}</span><span><b>${esc(a.t)}${me && a.ids.includes(me) ? ' <span class="bd-yes" role="img" aria-label="You hold this"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9"/></svg></span>' : ''}</b><span class="aw-d">${esc(a.d)}</span></span></div>
         ${(() => { const P = places(a); return (P.length ? `<ol class="aw-pl">${P.map(p => `<li class="aw-p r${p.rk}${me && p.ids.includes(me) ? ' me' : ''}"><span class="aw-rk">#${p.rk}</span>${faces(p.ids.slice(0, 2))}<span class="aw-pn">${nm(p.ids)}</span><b class="aw-pv">${esc(unit(p.v, a.u))}</b></li>`).join('')}</ol>` : '<span class="aw-open">Up for grabs</span>') + path(a, P); })()}
       </div>`).join('')}</div></section>
-      <section class="aw-sec"><h3>Badges${me ? ` <span class="aw-count">${got} of ${B.length} earned</span>` : ''}</h3><div class="bd-list">${B.map(b => { const have = me && b.ids.includes(me); return `<div class="card bdg${have ? ' have' : ''}">
+      <section class="aw-sec"><h3>Badges${me ? ` <span class="aw-count">${got} of ${B.length} earned</span>` : ''}</h3>${BADGE_GROUPS.map(([gk, gl]) => { const G = B.filter(b => b.g === gk); return G.length ? `<h4 class="bd-gh">${esc(gl)}<span>${me ? G.filter(b => b.ids.includes(me)).length + ' of ' : ''}${G.length}</span></h4><div class="bd-list">${G.map(b => { const have = me && b.ids.includes(me); return `<div class="card bdg${have ? ' have' : ''}">
         <span class="bd-med" aria-hidden="true">${b.e}</span>
         <div class="bd-body"><b>${esc(b.t)}${have ? ' <span class="bd-yes" role="img" aria-label="Earned"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9"/></svg></span>' : ''}</b><span class="aw-d">${esc(b.d)}</span><span class="bd-pic">${have ? `✓ ${b.e} profile picture unlocked` : `🔒 Unlocks the ${b.e} profile picture`}</span>
-          <div class="bd-who">${b.ids.length ? `${faces(b.ids)}<i>${b.ids.length} player${b.ids.length === 1 ? '' : 's'}</i>` : '<span class="aw-open">Nobody yet. Be the first.</span>'}</div></div></div>`; }).join('')}</div></section>`;
+          <div class="bd-who">${b.ids.length ? `${faces(b.ids)}<i>${b.ids.length} player${b.ids.length === 1 ? '' : 's'}</i>` : '<span class="aw-open">Nobody yet. Be the first.</span>'}</div></div></div>`; }).join('')}</div>` : ''; }).join('')}</section>`;
   }
 
 
@@ -2535,7 +2589,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
         <textarea id="recap-box" class="recapbox" rows="10" readonly>${esc(recapText())}</textarea>
         <div class="row"><button class="btn" type="button" id="copy-recap">Copy recap</button><span class="hint" id="recap-msg"></span></div>
       </details>
-      ${H('Scores')}
+      ${H('Scores')}${scoreLogHtml()}
       <details class="card med logcard" id="adm-log" ${meOpen['adm-log'] ? 'open' : ''}><summary><b>Log a match</b><span>For a score sent to you</span></summary>
         ${P.length < 2 ? `<p class="hint">Add at least 2 players to the roster first.</p>` : `
         <form id="log-form" style="display:grid;gap:16px">
@@ -3456,7 +3510,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
       const date = x.date || today();
       const dup = state.matches.some(m => m.date === date && m.a === W.id && m.b === Lp.id && rawText(m.score) === sets.map(([a,b]) => a+'-'+b).join(' '));
       if (dup) { skipped.push(`${x.line} (already logged)`); return; }
-      state.matches.push({id: uid(), date, a: W.id, b: Lp.id, score: {sets}});
+      state.matches.push({id: uid(), date, a: W.id, b: Lp.id, score: {sets}, added: Date.now(), addedBy: (FBL.user && FBL.user.email) || ''});
       added.push(`${W.name} over ${Lp.name}`);
     });
     if (added.length) RAT = null;
@@ -3677,7 +3731,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
       const match = {id: uid(), date: g('l-date') || today(), a, b, score};
       if (notes) match.notes = notes;
       { const lc = normLoc(clean(g('l-loc'))); if (!isMcF(lc)) match.loc = lc; }
-      state.matches.push(match);
+      match.added = Date.now(); match.addedBy = (FBL.user && FBL.user.email) || ''; state.matches.push(match);
       markDirty();
       const m2 = document.getElementById('log-msg'); if (m2) m2.textContent = `Logged: ${pname(a)} over ${pname(b)}. Log another or hit Save and publish.`;
       return;
@@ -3953,6 +4007,19 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
       ${D.concat(P).map(r => `<div class="wrow"><span>${repLine(r)}<br><i class="hint">Posted by ${esc(pname(r.by))} · ${r.status === 'disputed' ? '<b>disputed by ' + esc(pname(otherOf(r))) + '</b>' : 'waiting on ' + esc(pname(otherOf(r)))}</i></span><span><button class="btn sm" data-rok="${r.id}">Count it</button> <button class="link" data-repx="${r.id}">Remove</button></span></div>`).join('')}</div>` : ''}`; }
   function admStatus(){ if (!FBL.admin) return ''; const C = Object.values(LV.claims).length, D = LV.reports.filter(r => r.status === 'disputed').length, t = bkState.last;
     return `<div class="adm-stat"><span class="${D ? 'warn' : 'ok'}">${D ? D + ' disputed' : '✓ No disputes'}</span><span>${C} of ${state.players.length} signed in</span><span class="${bkState.err ? 'warn' : ''}">${bkState.err ? 'Backup needs attention' : t ? 'Backed up ' + esc(new Date(t).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})) : 'No backup yet'}</span></div>`; }
+  // every score in the order it was submitted: player posts (with who and when) and commissioner entries
+  let slogNew = false;
+  function scoreLogHtml(){ if (!FBL.admin) return '';
+    const ST = {confirmed: 'Counts', pending: 'Counts', disputed: 'Disputed', removed: 'Removed', league: 'Counts'};
+    const R = LV.reports.filter(r => r.w && r.l).map(r => ({t: r.at || 0, by: r.by ? pname(r.by) : 'a player', w: r.w, l: r.l, sc: (r.sc || '').replace(/-/g, '–'), d: r.d, loc: r.loc, st: r.status || 'confirmed'}));
+    const M = (state.matches || []).filter(m => !m.rep && outcome(m)).map(m => { const o = outcome(m); return {t: m.added || 0, by: 'Commissioner', w: o.w, l: o.l, sc: o.ff ? 'forfeit' : setText(o.sets), d: m.date, loc: m.loc, st: 'league'}; });
+    const key = x => x.t || (x.d ? new Date(x.d + 'T12:00:00').getTime() : 0), L = R.concat(M).sort((a, b) => key(a) - key(b));
+    if (slogNew) L.reverse();
+    const when = x => x.t ? new Date(x.t).toLocaleString('en-US', {month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'}) : 'Time not saved';
+    return `<details class="card med" id="adm-log2" ${meOpen['adm-log2'] ? 'open' : ''}><summary><b>Score log</b><span>${L.length} submitted</span></summary>
+      <div class="row slog-tools"><span class="hint" style="margin:0">In the order they were submitted.</span><button type="button" class="link" data-slog-ord="1">${slogNew ? 'Show oldest first' : 'Show newest first'}</button></div>
+      <ol class="slog">${L.map(x => `<li class="slog-r${x.st === 'removed' ? ' off' : ''}"><span class="slog-t">${esc(when(x))}</span><span class="slog-m"><b>${esc(pname(x.w))}</b> d. ${esc(pname(x.l))} <span class="slog-sc">${esc(x.sc)}</span><i>Played ${esc(x.d ? fmtDate(x.d, {month: 'short', day: 'numeric'}) : '?')} · ${esc(isMcF(x.loc) ? 'McFetridge' : normLoc(x.loc))} · by ${esc(x.by)}</i></span><span class="slog-st ${esc(x.st)}">${ST[x.st] || esc(x.st)}</span></li>`).join('')}</ol></details>`; }
+  document.addEventListener('click', e => { if (e.target.closest && e.target.closest('[data-slog-ord]')) { slogNew = !slogNew; meOpen['adm-log2'] = true; render(); } });
   function linkedHtml(){ if (!FBL.admin) return ''; const C = Object.values(LV.claims);
     return `<details class="card med" id="adm-linked" ${meOpen['adm-linked'] ? 'open' : ''}><summary><b>Signed-in players</b><span>${C.length} of ${state.players.length}</span></summary><p class="hint" style="margin:0">Wrong name picked? Tap Unlink.</p>
       ${C.length ? `<div class="mems">${C.sort((a, b) => pname(a.id).localeCompare(pname(b.id))).map(c => { const m = (FBL.members || []).find(x => x.uid === c.uid || x.id === c.uid); return `<div><b>${esc(pname(c.id))}</b><span>${esc(m && m.email || 'signed in')} · <button class="link" data-unclaim="${esc(c.id)}">Unlink</button></span></div>`; }).join('')}</div>` : '<p class="hint">Nobody yet.</p>'}
