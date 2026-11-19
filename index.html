@@ -2641,7 +2641,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
       if (!o.ret) { const mg = Math.abs(o.wg - o.lg); if (!close || mg < close.mg || (mg === close.mg && o.sets.length >= close.n)) close = {mg, n: o.sets.length, m, o, won}; } });
     const rec = (w, l) => `${w}–${l}`, others = state.players.length - 1;
     const T = [
-      gw + gl && ['Games won', Math.round(gw / (gw + gl) * 100) + '%', `${gw}–${gl}`],
+      gw + gl && ['Games won', Math.round(gw / (gw + gl) * 100) + '%', `${gw}–${gl} · ${gw + gl} total`],
       tbw + tbl && ['Tiebreaks', rec(tbw, tbl), tbw + tbl === 1 ? '1 played' : (tbw + tbl) + ' played'],
       dw + dl && ['Deciding sets', rec(dw, dl), 'went the distance'],
       bag + brd && ['Bagels · sticks', `${bag} · ${brd}`, 'sets won to 0 · to 1'],
