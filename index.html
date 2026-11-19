@@ -3811,6 +3811,10 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     if (f && !t.closest('.fab-menu')) f.classList.remove('fabo');
     const mx = t.closest('.match.mx'); if (mx && !t.closest('button, a, input, select, textarea, form, label')) { const id = mx.dataset.mx, o = !mx.classList.contains('mxo'); mx.classList.toggle('mxo', o); if (o) mxOpen.add(id); else mxOpen.delete(id); } });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { const f = document.getElementById('fab'); if (f) f.classList.remove('fabo'); } });
+  // every list of names reads A to Z by first name (the roster order itself never matters)
+  const azKey = p => String(p && p.name || '').trim();
+  const azSort = () => { const P = state && state.players; if (!Array.isArray(P)) return; for (let i = 1; i < P.length; i++) if (azKey(P[i - 1]).localeCompare(azKey(P[i]), 'en', {sensitivity: 'base', numeric: true}) > 0) { P.sort((a, b) => azKey(a).localeCompare(azKey(b), 'en', {sensitivity: 'base', numeric: true})); return; } };
+  const azRender = render; render = function(){ azSort(); azRender(); };
   render();
   fbBoot();
 })();
