@@ -3300,9 +3300,11 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
   const meId = () => !art && FBL.user && myPid() ? myPid() : '';
   const whoSel = (id, sel, blank, skip) => meId() ? `<select id="${id}" disabled>${playerOpts(meId())}</select>` : `<select id="${id}">${playerOpts(sel || '', blank, skip)}</select>`;
   const isMcF = l => !l || /^mcfetridge/i.test(String(l).trim());
+  const LOC_ALIAS = {'waveland south': 'Waveland'}; // other names people typed for the same courts
+  const normLoc = l => { const c = String(l || '').replace(/\s+/g, ' ').trim(); return LOC_ALIAS[c.toLowerCase()] || c; };
   const locPill = m => m && !isMcF(m.loc) ? ` <span class="pill loc">📍 ${esc(m.loc)}</span>` : '';
   // every court anyone has posted, McFetridge first, then the most used
-  function courtList(){ const S = new Map([['mcfetridge', ['McFetridge', 1e9]]]); [].concat(state.matches || [], state.upcoming || [], LV.reports, LV.courts).forEach(x => { const l = clean(x && x.loc || ''); if (!l || isMcF(l)) return; const k = l.toLowerCase(), e = S.get(k); if (e) e[1]++; else S.set(k, [l, 1]); });
+  function courtList(){ const S = new Map([['mcfetridge', ['McFetridge', 1e9]]]); [].concat(state.matches || [], state.upcoming || [], LV.reports, LV.courts).forEach(x => { const l = normLoc(clean(x && x.loc || '')); if (!l || isMcF(l)) return; const k = l.toLowerCase(), e = S.get(k); if (e) e[1]++; else S.set(k, [l, 1]); });
     return [...S.values()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(e => e[0]); }
   // a dropdown of courts already posted; "Other court" opens a box to type a new one
   const courtField = id => `<label class="field">Court<select data-court-sel="${id}" aria-label="Court">${courtList().map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('')}<option value="">Other court…</option></select><input id="${id}" class="court-other" maxlength="40" value="McFetridge" placeholder="Type the court name" autocomplete="off" hidden></label>`;
@@ -3322,7 +3324,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
         if (!sc) return {err: ''};
         const sets = parseSets(sc.replace(/\btb\b/ig, '')); if (!sets) return {err: 'Type the score like 8-5, or 6-1, 3-6, 10-2, or 4-2, 4-3 for mini tennis.'};
         const o = outcome({a: w, b: l, score: {sets}}); if (!o || o.w !== w) return {err: 'Write the score from the winner\'s side (winner\'s games first), like 8-5.'};
-        const loc = clean(v('s-loc')) || 'McFetridge', dur = Math.min(300, Math.max(0, parseInt(v('s-dur'), 10) || 0)), tm = /^\d{2}:\d{2}$/.test(v('s-tm')) ? v('s-tm') : '', nt = clean(v('s-n')).slice(0, 140), base = `${pname(w)} over ${pname(l)}\n${sets.map(([a, b]) => a + '-' + b).join(', ')}\n${mdy(d)}`, msg = base + (isMcF(loc) ? '' : '\nat ' + loc) + (nt ? '\n“' + nt + '”' : '');
+        const loc = normLoc(clean(v('s-loc'))) || 'McFetridge', dur = Math.min(300, Math.max(0, parseInt(v('s-dur'), 10) || 0)), tm = /^\d{2}:\d{2}$/.test(v('s-tm')) ? v('s-tm') : '', nt = clean(v('s-n')).slice(0, 140), base = `${pname(w)} over ${pname(l)}\n${sets.map(([a, b]) => a + '-' + b).join(', ')}\n${mdy(d)}`, msg = base + (isMcF(loc) ? '' : '\nat ' + loc) + (nt ? '\n“' + nt + '”' : '');
         const dup = LV.reports.some(r => r.status !== 'removed' && r.d === d && [r.w, r.l].sort().join() === [w, l].sort().join());
         if (dup && !art) return {err: 'That match is already reported for ' + mdy(d) + '.'};
         const other = w === me ? l : w;
@@ -3653,7 +3655,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
       const notes = g('l-notes').trim().slice(0, 280);
       const match = {id: uid(), date: g('l-date') || today(), a, b, score};
       if (notes) match.notes = notes;
-      { const lc = clean(g('l-loc')); if (!isMcF(lc)) match.loc = lc; }
+      { const lc = normLoc(clean(g('l-loc'))); if (!isMcF(lc)) match.loc = lc; }
       state.matches.push(match);
       markDirty();
       const m2 = document.getElementById('log-msg'); if (m2) m2.textContent = `Logged: ${pname(a)} over ${pname(b)}. Log another or hit Save and publish.`;
@@ -3712,7 +3714,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
       const pf = LV.profiles[p.id], o = ORIG[p.id];
       PF.forEach(k => { if (o[k] === undefined) delete p[k]; else p[k] = cl(o[k]); });
       if (pf) {
-        const pr = {}; if (PTYPES.includes(pf.type)) pr.type = pf.type; ['plays', 'bh', 'shot', 'pro', 'bio', 'home', 'since'].forEach(k => { const v = clean(pf[k] || ''); if (v) pr[k] = v; }); { const g = cleanL(pf.gear).slice(0, 60); if (g) pr.gear = g; } if (SURF.some(x => x[0] === pf.surf)) pr.surf = pf.surf;
+        const pr = {}; if (PTYPES.includes(pf.type)) pr.type = pf.type; ['plays', 'bh', 'shot', 'pro', 'bio', 'home', 'since'].forEach(k => { const v = k === 'home' ? normLoc(clean(pf[k] || '')) : clean(pf[k] || ''); if (v) pr[k] = v; }); { const g = cleanL(pf.gear).slice(0, 60); if (g) pr.gear = g; } if (SURF.some(x => x[0] === pf.surf)) pr.surf = pf.surf;
         if (Object.keys(pr).length) p.prof = pr; else delete p.prof;
         if (Array.isArray(pf.free)) { if (pf.free.length) p.free = pf.free.slice(); else delete p.free; }
         if (pf.note != null) { if (clean(pf.note)) p.avail = clean(pf.note); else delete p.avail; }
@@ -3726,7 +3728,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
       else { const n = PRIV && PRIV[p.id]; if (n) { p.phone = n; p.ph = 1; } else delete p.phone; }
     });
     const ids = new Set(state.players.map(p => p.id));
-    state.matches = (state.matches || []).filter(m => !m.rep).concat(LV.reports.filter(r => counts(r) && ids.has(r.w) && ids.has(r.l)).map(r => { const sets = parseSets(r.sc || ''); return sets ? Object.assign({id: 'r-' + r.id, a: r.w, b: r.l, date: r.d, score: {sets}, rep: r.id}, isMcF(r.loc) ? {} : {loc: r.loc}, r.note && clean(r.note) ? {notes: clean(r.note).slice(0, 140)} : {}, +r.dur > 0 ? {dur: Math.min(300, +r.dur)} : {}, /^\d{2}:\d{2}$/.test(r.tm || '') ? {time: r.tm} : {}) : null; }).filter(Boolean));
+    state.matches = (state.matches || []).filter(m => !m.rep).concat(LV.reports.filter(r => counts(r) && ids.has(r.w) && ids.has(r.l)).map(r => { const sets = parseSets(r.sc || ''); return sets ? Object.assign({id: 'r-' + r.id, a: r.w, b: r.l, date: r.d, score: {sets}, rep: r.id}, isMcF(r.loc) ? {} : {loc: normLoc(r.loc)}, r.note && clean(r.note) ? {notes: clean(r.note).slice(0, 140)} : {}, +r.dur > 0 ? {dur: Math.min(300, +r.dur)} : {}, /^\d{2}:\d{2}$/.test(r.tm || '') ? {time: r.tm} : {}) : null; }).filter(Boolean));
     state.upcoming = (state.upcoming || []).filter(u => !u.live).concat(LV.courts.filter(c => c.status === 'on' && ids.has(c.a)).map(c => { const u = {id: 'c-' + c.id, live: c.id, date: c.date, time: c.time, dur: c.dur || 1, a: c.a, loc: c.loc || 'McFetridge'}; if (c.b) u.b = c.b; if (c.note) u.note = c.note; return u; }));
   }
   function splitState(){ const pub = JSON.parse(JSON.stringify(state)), ph = {};
@@ -3743,6 +3745,9 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
   function liveRender(){ if (lrQ) return; lrQ = requestAnimationFrame(() => { lrQ = 0; overlay(); const a = document.activeElement; if (tab === 'me' && a && a.closest && a.closest('.meform')) { needR = true; return; } render(); }); }
   document.addEventListener('focusout', () => setTimeout(() => { const a = document.activeElement; if (needR && !(a && a.closest && a.closest('.meform'))) { needR = false; render(); } }, 50));
   async function liveAdd(col, data){ try { await FBL.F.addDoc(FBL.F.collection(FBL.db, col), data); return ''; } catch(_) { return 'Couldn’t post that. Check your connection and try again.'; } }
+  const locDone = new Set();
+  function locFix(){ if (!FBL.admin) return; LV.reports.forEach(r => { const n = normLoc(r.loc); if (r.loc && n !== r.loc && !locDone.has(r.id)) { locDone.add(r.id); liveUpd('reports', r.id, {loc: n}); } });
+    (state.matches || []).forEach(m => { if (!m.rep && m.loc && normLoc(m.loc) !== m.loc) { m.loc = normLoc(m.loc); markDirty(); } }); }
   async function liveUpd(col, id, data){ try { await FBL.F.updateDoc(FBL.F.doc(FBL.db, col, id), data); return ''; } catch(_) { return 'Couldn’t save that. It may have changed. Refresh and try again.'; } }
   async function liveSet(col, id, data){ try { await FBL.F.setDoc(FBL.F.doc(FBL.db, col, id), Object.assign({at: Date.now()}, data), {merge: true}); return ''; } catch(_) { return 'Couldn’t save that. Check your connection and try again.'; } }
   async function fbBoot(again){
@@ -3757,11 +3762,11 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
     const sub = (col, fn) => F.onSnapshot(F.collection(FBL.db, col), s2 => { const L = []; s2.forEach(d => L.push(Object.assign({id: d.id}, d.data()))); fn(L); liveRender(); }, () => {});
     sub('claims', L => { LV.claims = {}; L.forEach(c => LV.claims[c.id] = c); });
     sub('profiles', L => { LV.profiles = {}; L.forEach(c => LV.profiles[c.id] = c); });
-    sub('reports', L => { LV.reports = L.sort((a, b) => (b.at || 0) - (a.at || 0)); });
+    sub('reports', L => { LV.reports = L.sort((a, b) => (b.at || 0) - (a.at || 0)); locFix(); });
     sub('courts', L => { LV.courts = L; });
     F.onSnapshot(F.collection(FBL.db, 'reactions'), s2 => { const rx = {}, mine = {}; s2.forEach(d => { const r = d.data() || {}; if (!r.m || !RX.includes(r.e)) return; (rx[r.m] = rx[r.m] || {})[r.e] = ((rx[r.m] || {})[r.e] || 0) + 1; if (FBL.user && r.uid === FBL.user.uid) mine[r.m] = r.e; }); LV.rx = rx; LV.rxMine = mine; LV.rxOk = true; liveRender(); }, () => { LV.rxOk = false; });
     A.onAuthStateChanged(FBL.auth, async u => {
-      FBL.user = u || null; FBL.admin = !!(u && u.email && ADMIN_EMAILS.includes(u.email.toLowerCase())); art = FBL.admin ? {fb: 1} : null; FBL.me = null; FBL.subs = []; FBL.mine = [];
+      FBL.user = u || null; FBL.admin = !!(u && u.email && ADMIN_EMAILS.includes(u.email.toLowerCase())); art = FBL.admin ? {fb: 1} : null; setTimeout(locFix, 0); FBL.me = null; FBL.subs = []; FBL.mine = [];
       if (FBL.unsub) { FBL.unsub(); FBL.unsub = null; } if (FBL.unpriv) { FBL.unpriv(); FBL.unpriv = null; } if (FBL.unmem) { FBL.unmem(); FBL.unmem = null; }
       (FBL.unl || []).forEach(f => { try { f(); } catch(_) {} }); FBL.unl = []; LV.contacts = {}; LV.ctOk = false; LV.chIn = []; LV.chOut = []; meDraft = {};
       FBL.privOk = false; if (!u) { PRIV = {}; applyPriv(); }
