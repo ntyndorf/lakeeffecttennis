@@ -1020,7 +1020,7 @@ button.btn.pri,.sheet .acts button.btn:first-child,.mb-go,.inbox button.btn[data
 .gsi{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--surface2,var(--bg));font-size:15px}
 .gsrow.ok b{color:var(--muted);text-decoration:line-through}.gsrow.ok .gsi{background:var(--win);color:#fff;font-weight:700}
 .mbprof{font-weight:700;color:var(--accent)}
-.pedit[open]{padding-bottom:0}
+.pedit[open]{padding-bottom:0}details.pedit>summary{display:none!important}.pedit>.pe-prev{margin-top:14px}
 .pe-prev{display:flex;align-items:center;gap:12px;padding:12px;margin-top:4px;border-radius:12px;background:var(--surface2,var(--bg))}
 .pe-prev .av.lg{margin:0}.pe-prev b{display:block;font-size:17px}.pe-prev .pe-nick{font-style:normal;color:var(--muted);font-weight:400}.pe-line{font-size:13px;color:var(--muted)}
 .pe-sec{display:grid;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
@@ -1876,6 +1876,15 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
 .aw-pn{flex:1;min-width:0;font-size:14px;line-height:1.3;overflow-wrap:anywhere}.aw-pn i{font-style:normal;color:var(--muted);font-size:12.5px}
 .aw-pv{flex:none;font-size:13px;font-weight:700;color:var(--muted)}.aw-p.r1 .aw-pv{color:var(--ink)}
 .aw-me b{color:var(--ink);font-weight:700}
+
+/* commissioner */
+.adm-h{margin:18px 2px 8px;font:800 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.adm-stat{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.adm-stat span{padding:6px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface);font-size:13px;color:var(--muted)}
+.adm-stat .ok{color:var(--win,#4CC38A);border-color:color-mix(in srgb,var(--win,#4CC38A) 45%,transparent)}.adm-stat .warn{color:var(--loss,#F49A8E);border-color:color-mix(in srgb,var(--loss,#F49A8E) 50%,transparent)}
+.adm-alert{border-color:color-mix(in srgb,var(--loss,#F49A8E) 55%,transparent)!important}
+details.med .roster,details.med form,details.med .mems,details.med>.hint,details.med>p{margin-top:10px}
+.invcard.med .wrow{margin-left:16px;margin-right:16px}
+.me-h{margin:20px 2px 8px;font:800 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 </style><link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&amp;family=Atkinson+Hyperlegible:wght@400;700&amp;family=Archivo+Black&amp;family=Yellowtail&amp;family=Instrument+Serif:ital@0;1&amp;display=swap"><div class="wrap" id="app"></div><script type="application/json" id="league-data">{"league":{"name":"McFetridge Winter Singles","season":"Winter 2026–27","venue":"McFetridge Sports Center","address":"3843 N California Ave","level":"3.0–3.5","startDate":"2026-11-01","endDate":"","tipUrl":"https://venmo.com/u/nicktyndorf","commissioner":"Nick","draft":false,"news":"","newsDate":"2026-10-09"},"players":[{"id":"5u76dri","name":"Nick T","level":"3.0","prof":{"plays":"Righty","bh":"Two-handed","shot":"Inside-out forehand","pro":"Daniil Medvedev"},"ph":1},{"id":"p5onhu0","name":"Spencer C","level":"3.25","ph":1},{"id":"wd1jmau","name":"Brendan O","level":"3.0","ph":1},{"id":"ata2iuw","name":"Tim S","level":"3.0","ph":1},{"id":"sxkx0ga","name":"Emmett F","level":"3.0","ph":1},{"id":"prz4fd6","name":"Mohammed F","level":"3.5","ph":1},{"id":"67cu010","name":"Vitaliy B","level":"3.25","ph":1},{"id":"vswai94","name":"Luke H","level":"3.25","ph":1},{"id":"dp9j7ls","name":"Spencer P","level":"3.25","ph":1},{"id":"cuwu10i","name":"Juan G","level":"3.0","ph":1},{"id":"mfuf932","name":"Zach K","level":"3.0","ph":1},{"id":"iivf8x7","name":"Alvaro R","level":"3.0","ph":1},{"id":"wg8fb4m","name":"John W","level":"3.25","ph":1},{"id":"iev0edc","name":"Nathan H","level":"3.0","ph":1},{"id":"tm2km4c","name":"Brian K","level":"3.0","ph":1},{"id":"uu82eoc","name":"Aidan V","level":"3.0","ph":1},{"id":"w5zwbyo","name":"Salem H","level":"3.25","ph":1},{"id":"m620f34","name":"Bill J","level":"3.25","ph":1},{"id":"zwb6fo9","name":"Peter R","level":"3.0","ph":1},{"id":"4xr256c","name":"Will C","level":"3.0","ph":1}],"matches":[],"updated":"2026-10-29T18:05:36.952Z","upcoming":[]}</script><script id="page-js">
 (function(){
   const SRC = (() => { const e = document.getElementById('league-data').textContent; try { const c = localStorage.getItem('le-state'); if (c) { const cu = (JSON.parse(c) || {}).updated || '', eu = (JSON.parse(e) || {}).updated || ''; if (cu > eu) return c; } } catch(_) {} return e; })();
@@ -1883,8 +1892,8 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   const PH0 = {}; state.players.forEach(p => { if (p.phone) { PH0[p.id] = p.phone; p.ph = 1; } });
   let art = null, dirty = false, tab = 'standings', editing = null, saving = '', viewPlayer = null, moreOpen = false;
   let newsHidden = (() => { try { return localStorage.getItem('mws-news-hidden') || ''; } catch(_) { return ''; } })();
-  const PRIMARY = ['me', 'standings', 'upcoming', 'results', 'awards', 'rules'];
-  try { const h = location.hash.slice(1); if (['me','standings','upcoming','results','awards','rules','admin'].includes(h)) tab = h; else if (h === 'h2h') tab = 'standings'; else if (/^p-[a-z0-9]+$/.test(h)) { tab = 'player'; viewPlayer = h.slice(2); } else if (/^m-[\w-]+$/.test(h)) { tab = 'match'; viewMatch = h.slice(2); } } catch(e){}
+  const PRIMARY = ['me', 'standings', 'results', 'awards', 'rules'];
+  try { const h = location.hash.slice(1); if (['me','standings','results','awards','rules','admin'].includes(h)) tab = h; else if (h === 'h2h') tab = 'standings'; else if (/^p-[a-z0-9]+$/.test(h)) { tab = 'player'; viewPlayer = h.slice(2); } else if (/^m-[\w-]+$/.test(h)) { tab = 'match'; viewMatch = h.slice(2); } } catch(e){}
   const app = document.getElementById('app');
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const uid = () => Math.random().toString(36).slice(2, 9);
@@ -2325,7 +2334,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   const invUrl = pid => location.origin + location.pathname + '?invite=' + encodeURIComponent(pid);
   let INV = ''; try { const q = new URLSearchParams(location.search).get('invite'); if (q) { localStorage.setItem('le-invite', q); history.replaceState(null, '', location.pathname + location.hash); } INV = localStorage.getItem('le-invite') || ''; } catch(_) {}
   function inviteHtml(){ if (!FBL.admin) return ''; const open = state.players.filter(p => !LV.claims[p.id]);
-    return `<details class="card invcard"><summary><b>Invite links</b><span>${open.length ? open.length + ' not signed up yet' : 'Everyone has signed up'}</span></summary>
+    return `<details class="card med invcard" id="adm-inv" ${meOpen['adm-inv'] ? 'open' : ''}><summary><b>Invite links</b><span>${open.length ? open.length + ' not signed up yet' : 'Everyone has signed up'}</span></summary>
       <p class="hint">Each link signs that player straight into their own name. Send it by text, or copy it.</p>
       ${open.map(p => { const ph = PRIV && PRIV[p.id], sh = ph ? smsHref({phone: ph}, `Hey ${first(p)}! Here's your link to the Lake Effect Tennis Club league site. It signs you right in as you: ${invUrl(p.id)}`) : '';
         return `<div class="wrow"><span>${avatar(p.id)}<b>${esc(p.name)}</b></span><span>${sh ? `<a class="link" href="${esc(sh)}" target="_top">Text</a> · ` : ''}<button type="button" class="link" data-inv-copy="${p.id}">Copy link</button></span></div>`; }).join('')}</details>`; }
@@ -2427,7 +2436,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     const book = `<a class="inl" href="https://mcfetridgesportscenter.com/tennis/book-court-time" target="_blank" rel="noopener">McFetridge booking page</a>`, cm = L.commissioner ? esc(L.commissioner) : 'the commissioner';
     const items = [
       ['Courts and cost', `<ul>
-        <li>Play at any court you both agree on, then post it on the <b>Courts</b> tab. On an open court, the first to tap <b>Claim it</b> gets it.</li>
+        <li>Set up matches and courts in the group chat. Play at any court you both agree on.</li>
         <li>Split the court cost: the player who didn't book pays the booker their half the day you play.</li>
         <li><b>At McFetridge:</b> book on the ${book} (Chicago Park District account needed). Courts open 6 days ahead at 7am and go fast. An hour is $31.37, so the non-booker pays $16.</li></ul>`],
       ['Format', `<ul>
@@ -2480,14 +2489,14 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     const wk = chrono().filter(m => m.date >= f && m.date <= t);
     const lines = [`${L.name}: week of ${md(from)} – ${md(d)}`, ''];
     if (wk.length) { lines.push(`Results (${wk.length}):`); wk.forEach(m => { const o = outcome(m); lines.push(`• ${pname(o.w)} d. ${pname(o.l)} ${o.ff ? '(' + (o.reason === 'noshow' ? 'no-show' : o.reason === 'late' ? 'late cancel' : 'forfeit') + ')' : setText(o.sets) + (o.ret ? ' ret.' : '')}`); }); }
-    else lines.push('No matches logged this week. Courts are open, get one on the board.');
+    else lines.push('No matches logged this week. Get one on the board.');
     const rows = standings().filter(r => r.mp);
     if (rows.length) { lines.push('', 'Top of the standings:'); rows.slice(0,3).forEach((r,i) => lines.push(`${i+1}. ${r.name}, ${r.pts} pts (${r.w}–${r.l})`)); }
     const hot = state.players.map(p => [p.name, streakOf(p.id)]).filter(x => x[1] >= 3);
     if (hot.length) lines.push('', 'On a streak: ' + hot.map(([n,k]) => `${n} (W${k})`).join(', '));
     const aw = awards().filter(a => a.ids.length);
     if (aw.length) lines.push('', 'Award leaders: ' + aw.map(a => `${a.t}: ${a.ids.map(pname).join(' & ')}`).join(' · '));
-    const nx = upcomingList();
+    const nx = [];
     if (nx.length) { lines.push('', 'Coming up:'); nx.slice(0,5).forEach(u => lines.push(`• ${fmtDate(u.date,{weekday:'short',month:'numeric',day:'numeric'})}${u.time ? ' ' + fmtSlot(u) : ''}: ${pname(u.a)} ${u.b ? 'vs ' + pname(u.b) : '(open court, needs an opponent)'} at ${u.loc || 'McFetridge'}`)); }
     const idle = state.players.filter(p => !chrono().some(m => m.a === p.id || m.b === p.id));
     if (idle.length) lines.push('', `Still looking for a first match: ${idle.map(p => p.name).join(', ')}`);
@@ -2499,8 +2508,15 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   function renderAdmin(){
     const L = state.league, P = state.players;
     const opts = sel => `<option value="">Choose…</option>` + P.map(p => `<option value="${p.id}" ${sel===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
-    return `<div><h2>Commissioner</h2></div>${liveHtml()}${FBL.subs.length ? inboxHtml() : ''}${backupHtml()}${inviteHtml()}<section class="card rc-card"><h3>Recaps for the group chat</h3><p class="hint">A set of images to swipe through: standings, match of the week, the numbers and more.</p><div class="row"><button type="button" class="btn pri" data-recap="week">Weekly recap</button><button type="button" class="btn" data-recap="month">Monthly recap</button></div></section>
-      <div class="card logcard"><h3>Log a match</h3>
+    const H = t => `<h3 class="adm-h">${t}</h3>`;
+    return `<div><h2>Commissioner</h2><p class="sub">League tools. Only commissioners see this tab.</p></div>${admStatus()}${FBL.subs.length ? inboxHtml() : ''}${liveHtml()}
+      ${H('Share')}<section class="card"><h3>Recaps for the group chat</h3><p class="hint" style="margin:0">A set of images to swipe through: standings, match of the week, the numbers and more.</p><div class="row"><button type="button" class="btn pri" data-recap="week">Weekly recap</button><button type="button" class="btn" data-recap="month">Monthly recap</button></div></section>
+      <details class="card med" id="adm-recap" ${meOpen['adm-recap'] ? 'open' : ''}><summary><b>Recap as text</b><span>Copy and paste</span></summary>
+        <textarea id="recap-box" class="recapbox" rows="10" readonly>${esc(recapText())}</textarea>
+        <div class="row"><button class="btn" type="button" id="copy-recap">Copy recap</button><span class="hint" id="recap-msg"></span></div>
+      </details>
+      ${H('Scores')}
+      <details class="card med logcard" id="adm-log" ${meOpen['adm-log'] ? 'open' : ''}><summary><b>Log a match</b><span>For a score sent to you</span></summary>
         ${P.length < 2 ? `<p class="hint">Add at least 2 players to the roster first.</p>` : `
         <form id="log-form" style="display:grid;gap:16px">
           <fieldset class="fmtpick"><legend>Scoring format</legend>
@@ -2522,23 +2538,6 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
           <div><button class="btn" type="submit">Submit</button></div>
           <p class="hint" id="log-msg">Winner's games first. No-shows and late cancels count as forfeits.</p>
         </form>`}
-      </div>
-      <details class="card med" id="adm-up" ${meOpen['adm-up'] ? 'open' : ''}><summary><b>Add an upcoming match</b><span>Book it for a player</span></summary>
-        <form id="up-form" class="grid2">
-          <label class="field">Date<input type="date" id="u-date" value="${today()}"></label>
-          <label class="field">Start time<input type="time" id="u-time" step="900" required></label>
-          <label class="field">Length<select id="u-dur" required><option value="">Choose 1 or 2 hours</option><option value="1">1 hour</option><option value="2">2 hours</option></select></label>
-          <label class="field">Booked by<select id="u-a">${opts('')}</select></label>
-          <label class="field">Opponent<select id="u-b"><option value="">Open court (needs an opponent)</option>${P.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></label>
-          <label class="field">Location<input id="u-loc" value="McFetridge"></label>
-          <label class="field">Note (optional)<input id="u-note" placeholder="Court 3" maxlength="80"></label>
-          <div><button class="btn" type="submit">Add to Upcoming</button></div>
-        </form>
-        <p class="hint" id="up-msg">Past dates drop off the board automatically. Once it's played, log the score as usual.</p>
-      </details>
-      <details class="card med" id="adm-recap" ${meOpen['adm-recap'] ? 'open' : ''}><summary><b>Weekly recap</b><span>Copy for the group chat</span></summary>
-        <textarea id="recap-box" class="recapbox" rows="10" readonly>${esc(recapText())}</textarea>
-        <div class="row"><button class="btn" type="button" id="copy-recap">Copy recap</button><span class="hint" id="recap-msg"></span></div>
       </details>
       <details class="card med" id="adm-paste" ${meOpen['adm-paste'] ? 'open' : ''}><summary><b>Paste from the chat</b><span>Log texted scores</span></summary>
         <p class="hint">One score per message, like the example. Paste several at once.</p>
@@ -2548,9 +2547,10 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
         </form>
         <div class="hint" id="paste-msg"></div>
       </details>
-      <div class="card"><h3>Roster (${P.length})</h3>
+      ${H('Players')}
+      <details class="card med" id="adm-roster" ${meOpen['adm-roster'] ? 'open' : ''}><summary><b>Roster</b><span>${P.length} players</span></summary>
         <p class="hint" style="margin:0">Phone numbers only show to signed-in players. Players can update or hide their own on their Me tab.</p>
-        <p class="hint" style="margin:0">In-game Cup: tick players who said yes to showing up as opponents in the game’s McFetridge Cup. They appear by initials only, starting once the game is connected to the league with sign-in. Off by default.</p>
+        <p class="hint" style="margin:0">In-game Cup: tick players who said yes to showing up in the game, by initials only.</p>
         <form class="row" id="add-form"><input id="new-player" placeholder="Player name" autocomplete="off"><button class="btn" type="submit">Add</button></form>
         ${P.length ? `<ul class="roster">${P.map(p => `<li><span class="rname">${esc(p.name)}</span>
           <select id="pl-lvl-${p.id}" aria-label="Level for ${esc(p.name)}"><option value="">Level</option>${LEVELS.map(l => `<option ${p.level===l?'selected':''}>${l}</option>`).join('')}</select>
@@ -2560,8 +2560,10 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
           <button class="link" data-free="${p.id}">${freeEdit === p.id ? 'Done' : 'Free times' + ((p.free || []).length ? ' (' + p.free.length + ')' : '')}</button>
           <button class="link" data-remove="${p.id}">Remove</button>
           ${freeEdit === p.id ? `<div class="fpick"><span></span>${FSLOTS.map(([, L]) => `<span class="h">${L.slice(0, 3)}</span>`).join('')}${FDAYS.map(([d, D]) => `<span class="d">${D}</span>${FSLOTS.map(([k, L]) => `<label><input type="checkbox" data-fp="${p.id}" data-fk="${d}-${k}" ${(p.free || []).includes(d + '-' + k) ? 'checked' : ''} aria-label="${esc(p.name)} ${D} ${L}"></label>`).join('')}`).join('')}</div>` : ''}</li>`).join('')}</ul>` : `<p class="hint">Add everyone who said yes.</p>`}
-      </div>
-      <div class="card"><h3>League details</h3><div class="grid2">
+      </details>
+      ${linkedHtml()}${inviteHtml()}
+      ${H('League')}
+      <details class="card med" id="adm-league" ${meOpen['adm-league'] ? 'open' : ''}><summary><b>League details</b><span>${esc(L.name || '')}</span></summary><div class="grid2">
         <label class="field">League name<input id="f-name" value="${esc(L.name)}"></label>
         <label class="field">Season<input id="f-season" value="${esc(L.season)}"></label>
         <label class="field">Season start<input type="date" id="f-startDate" value="${esc(L.startDate)}"></label>
@@ -2571,7 +2573,8 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
         <label class="field">Commissioner<input id="f-commissioner" value="${esc(L.commissioner || '')}"></label>
         <label class="field" style="grid-column:1/-1">What's new (shows under the header; leave blank to hide)<input id="f-news" value="${esc(L.news || '')}" maxlength="200"></label>
         <label class="field">Tip jar link<input id="f-tipUrl" placeholder="https://venmo.com/u/…" value="${esc(L.tipUrl)}"></label>
-      </div></div>`;
+      </div></details>
+      ${backupHtml()}`;
   }
 
   function ticker(){
@@ -3435,8 +3438,8 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   function render(){
     RAT = null;
     const L = state.league, tip = safeUrl(L.tipUrl);
-    const upN = upcomingList().length;
-    const tabs = (FBL.user ? [['me', meTabLabel()]] : []).concat([['standings','Standings'],['results','Results'],['awards','Awards'],['upcoming', upN ? `Courts (${upN})` : 'Courts'],['rules','Rules']]).concat(art ? [['admin','Commissioner']] : []);
+    if (tab === 'upcoming') tab = 'standings';
+    const tabs = (FBL.user ? [['me', meTabLabel()]] : []).concat([['standings','Standings'],['results','Results'],['awards','Awards'],['rules','Rules']]).concat(art ? [['admin','Commissioner']] : []);
     if (tab !== 'player' && tab !== 'match' && !tabs.some(t => t[0] === tab)) tab = 'standings';
     const body = tab === 'me' ? renderMe() : tab === 'player' ? renderPlayer(viewPlayer) : tab === 'match' ? renderMatch(viewMatch) : tab === 'standings' ? renderStandings() : tab === 'upcoming' ? renderUpcoming() : tab === 'awards' ? renderAwards() : tab === 'results' ? renderResults() : tab === 'h2h' ? renderH2H() : tab === 'rules' ? renderRules() : renderAdmin();
     const span = L.startDate || L.endDate ? `<span>${esc(fmtDate(L.startDate,{month:'short',day:'numeric'}) || 'Now')} – ${esc(fmtDate(L.endDate,{month:'short',day:'numeric'}) || 'Spring')}</span>` : '';
@@ -3464,7 +3467,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
       })()}</nav>
       <main class="panel">${body}</main>
       <nav class="footi" aria-label="Site tools"><button type="button" data-theme-sw="1">${lic('palette')}Theme</button><button type="button" data-refresh="1">${lic('refresh')}Refresh</button><a href="https://ntyndorf.github.io/mcfetridge-tour/" target="_blank" rel="noopener">${lic('racket')}Play 2k26</a>${tip ? `<a href="${esc(tip)}" target="_blank" rel="noopener">${lic('cup')}Tip jar</a>` : ''}</nav>
-      ${FBL.ready ? `<div class="fab" id="fab"><div class="fab-menu" role="menu"><button type="button" role="menuitem" data-sheet="book">${lic('cal')}Post a court</button><button type="button" role="menuitem" data-sheet="score">${lic('pencil')}Report a score</button></div><button type="button" class="fab-main" aria-label="Report a score or post a court" aria-expanded="false"><span aria-hidden="true">+</span></button></div>` : ''}
+      ${FBL.ready && !(tab === 'me' && meEdit) ? `<div class="fab" id="fab"><button type="button" class="fab-main" aria-label="Report a score"><span aria-hidden="true">+</span></button></div>` : ''}
       ${dirty ? `<div class="savebar"><span>${saving || 'Unsaved changes'}</span><button class="btn ghost" id="discard">Discard</button><button class="btn" id="save">Save and publish</button></div>` : ''}`;
   }
 
@@ -3794,21 +3797,19 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
         ${T.conf.map(x => `<div class="wrow"><span>${esc(pname(x.by))} reported: ${repLine(x)}</span><span><button class="btn sm" data-rconf="${x.id}">Confirm</button> <button class="link" data-rdisp="${x.id}">Dispute</button></span></div>`).join('')}
         ${T.chIn.map(c => `<div class="wrow"><span><b>${esc(pname(c.from))}</b> challenged you${c.when ? ' · ' + esc(c.when) : ''}${c.msg ? `<br><i class="hint">“${esc(c.msg)}”</i>` : ''}</span><span><button class="btn sm" data-chok="${c.id}">Accept</button> <button class="link" data-chno="${c.id}">Can't</button></span></div>`).join('')}
         </section>` : ''; }
-  function renderMyPage(me){
+  function renderMyPage(me, extra){
     const pg = renderPlayer(me).replace('<button class="back" data-tab="standings">← Standings</button>', '')
       .replace('<button class="link" data-tab="me">Edit my profile</button>', '<button class="link" data-tab="me" data-me-edit="1" data-jump="me-prof">Edit my profile</button>')
       .replace('<button class="link" data-tab="me" data-jump="me-free">Edit my free times</button>', '<button class="link" data-tab="me" data-me-edit="1" data-jump="me-free">Edit my free times</button>');
-    return `${meNeeds(me)}<div class="mybar"><span>This is how others see your page</span><button type="button" class="btn sm" data-me-edit="1">${lic('pencil')}Edit my page</button></div>${pg}`; }
+    return `${meNeeds(me)}<div class="mybar"><span>This is how others see your page</span><button type="button" class="btn sm" data-me-edit="1">${lic('pencil')}Edit profile</button></div>${extra || ''}${pg}`; }
   function renderMe(){
     const u = FBL.user, me = myPid(), cn = esc(state.league.commissioner || 'the commissioner');
     if (!u) return `<div><h2>Me</h2></div><div class="empty">Sign in to see your page. <button class="btn" data-acct="1">Sign in</button></div>`;
     if (!me) return `<div><h2>Welcome!</h2><p class="sub">Pick which player you are. Each name can only be picked once.</p></div><div class="card"><select data-fb-me="1" aria-label="Which player are you?">${playerOpts('', 'Choose your name', null, true)}</select><p class="hint" style="margin:0">Name already taken by mistake? Ask ${cn} to free it up.</p></div>`;
-    if (!meEdit) return renderMyPage(me);
     const p = state.players.find(x => x.id === me) || {name: ''}, pf = LV.profiles[me] || {}, ct = LV.contacts[me] || {}, pr = p.prof || {}, T = todos();
     const dv = (id, v) => meDraft[id] !== undefined ? meDraft[id] : (v == null ? '' : v);
     const dc = (id, v) => meDraft[id] !== undefined ? !!meDraft[id] : !!v;
     const rows = standings(), rank = rows.findIndex(r => r.id === me) + 1, r = rows[rank - 1] || {pts: 0, w: 0, l: 0, mp: 0};
-    const myCourts = upcomingList().filter(x => x.a === me || x.b === me);
     const mine = LV.reports.filter(x => x.by === me && (x.status === 'pending' && !counts(x) || x.status === 'disputed'));
     const fresh = LV.reports.filter(x => (x.status === 'confirmed' || x.status === 'pending') && (x.w === me || x.l === me) && Date.now() - (x.at || 0) < 3*864e5);
     const outs = LV.chOut.filter(c => c.status === 'open' || (c.status !== 'cancelled' && Date.now() - (c.doneAt || c.at || 0) < 7*864e5));
@@ -3817,19 +3818,16 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     const col = dv('m-color', pf.color || p.color || avColor(me)), phone = dv('m-phone', pf.ct ? ct.phone || '' : (PRIV && PRIV[me]) || ''), show = pf.ct ? dc('m-show', ct.show) : dc('m-show', !!(PRIV && PRIV[me]));
     const fr = new Set(meDraft.free || p.free || []);
     const chRow = c => { const o = c.from === me ? c.to : c.from, op = state.players.find(x => x.id === o) || {name: ''}, h = smsHref(op, `Hey ${first(op)}! Locking in our league match. When works for you?`);
-      return `<div class="wrow"><span>${c.from === me ? 'You challenged' : 'You accepted'} <button class="plink" data-player="${o}">${esc(op.name)}</button>${c.when ? ' · ' + esc(c.when) : ''}</span><span class="hint">${c.status === 'open' ? `Waiting for an answer · <button class="link" data-chx="${c.id}">Cancel</button>` : c.status === 'declined' ? `${esc(first(op))} can't this time${c.reply ? ': “' + esc(c.reply) + '”' : ''}` : `On! ${h ? `<a class="smslink" href="${esc(h)}" target="_top" data-sms="${esc(first(op))}">Text ${esc(first(op))}</a> · ` : ''}<button class="link" data-bookw="${o}">Post the court</button> · <button type="button" class="link" data-card="challenge" data-arg="${c.id}">Share</button>`}</span></div>`; };
-    return `${T.conf.length || T.chIn.length ? `<section class="card todo"><h3>Needs you</h3>
-        ${T.conf.map(x => `<div class="wrow"><span>${esc(pname(x.by))} reported: ${repLine(x)}</span><span><button class="btn sm" data-rconf="${x.id}">Confirm</button> <button class="link" data-rdisp="${x.id}">Dispute</button></span></div>`).join('')}
-        ${T.chIn.map(c => `<div class="wrow"><span><b>${esc(pname(c.from))}</b> challenged you${c.when ? ' · ' + esc(c.when) : ''}${c.msg ? `<br><i class="hint">“${esc(c.msg)}”</i>` : ''}</span><span><button class="btn sm" data-chok="${c.id}">Accept</button> <button class="link" data-chno="${c.id}">Can't</button></span></div>`).join('')}
-        </section>` : ''}
-      <button type="button" class="back" data-me-view="1">← My page</button>
-      <div class="mehead">${avatar(me, 'lg')}<div><h2>${esc(p.name)}${p.nick ? ` <span class="nick">“${esc(p.nick)}”</span>` : ''}</h2><p class="sub">${r.mp ? `#${rank} · ${r.pts} pts · ${r.w}–${r.l}` : 'No counted matches yet'} · <button class="link" data-player="${me}">My public page</button></p></div></div>
-      ${getStarted(me, p, pf, ct)}
+      return `<div class="wrow"><span>${c.from === me ? 'You challenged' : 'You accepted'} <button class="plink" data-player="${o}">${esc(op.name)}</button>${c.when ? ' · ' + esc(c.when) : ''}</span><span class="hint">${c.status === 'open' ? `Waiting for an answer · <button class="link" data-chx="${c.id}">Cancel</button>` : c.status === 'declined' ? `${esc(first(op))} can't this time${c.reply ? ': “' + esc(c.reply) + '”' : ''}` : `On! ${h ? `<a class="smslink" href="${esc(h)}" target="_top" data-sms="${esc(first(op))}">Text ${esc(first(op))}</a> · ` : ''}<button type="button" class="link" data-card="challenge" data-arg="${c.id}">Share</button>`}</span></div>`; };
+    const extra = `${getStarted(me, p, pf, ct)}
       <div class="meacts"><button class="btn ghost" data-chal="">⚔️ Challenge someone</button></div>
       ${mine.length || outs.length || ins.length ? `<section class="card"><h3>In progress</h3>${mine.map(x => `<div class="wrow"><span>${repLine(x)}</span><span class="hint">${x.status === 'disputed' ? 'Disputed · ' + cn + ' will sort it out' : `Waiting on ${esc(first(state.players.find(y => y.id === otherOf(x)) || {name: ''}))} · <button class="link" data-rwd="${x.id}">Withdraw</button>`}</span></div>`).join('')}${outs.map(chRow).join('')}${ins.map(chRow).join('')}</section>` : ''}
       ${fresh.length ? `<section class="card"><h3>Recent scores</h3>${fresh.map(x => `<div class="wrow"><span>${repLine(x)}</span><span>${x.by === me ? `<button class="link" data-rwd="${x.id}">Undo</button>` : `<button class="link" data-rdisp="${x.id}">Dispute</button>`}</span></div>`).join('')}</section>` : ''}
-      ${myCourts.length ? `<section class="card"><h3>My courts</h3><section class="logday" style="margin:0">${myCourts.map(upRow).join('')}</section></section>` : ''}
-      <details class="card meform med pedit" id="me-prof" ${meOpen['me-prof'] ? 'open' : ''}><summary><b>Edit profile</b><span>${esc([pf.nick || p.nick ? '“' + (pf.nick || p.nick) + '”' : '', pr.plays, pr.bh ? (pr.bh === 'One-handed' ? '1H' : '2H') + ' backhand' : ''].filter(Boolean).join(' · ') || 'Add your details')}</span></summary>
+`;
+    if (!meEdit) return renderMyPage(me, extra);
+    return `      <button type="button" class="back" data-me-view="1">← My page</button>
+      <div><h2>Edit profile</h2><p class="sub">Changes show on your page and next to your name everywhere.</p></div>
+      <details class="card meform med pedit" id="me-prof" open><summary><b>Edit profile</b><span>${esc([pf.nick || p.nick ? '“' + (pf.nick || p.nick) + '”' : '', pr.plays, pr.bh ? (pr.bh === 'One-handed' ? '1H' : '2H') + ' backhand' : ''].filter(Boolean).join(' · ') || 'Add your details')}</span></summary>
         <div class="pe-prev" aria-live="polite"><span class="av lg pe-av${dv('m-emo', pf.emo || '') ? ' emo' : ''}" style="background:${col}" aria-hidden="true">${esc(dv('m-emo', pf.emo || '') || initials(p.name))}</span><div><b>${esc(p.name)}<i class="pe-nick">${dv('m-nick', pf.nick || p.nick || '') ? ' “' + esc(dv('m-nick', pf.nick || p.nick || '')) + '”' : ''}</i></b><span class="pe-line">${esc([dv('m-plays', pr.plays), dv('m-bh', pr.bh) ? (dv('m-bh', pr.bh) === 'One-handed' ? '1H' : '2H') + ' backhand' : '', dv('m-shot', pr.shot || '')].filter(Boolean).join(' · ') || 'Your style shows here')}</span></div></div>
 
         <div class="pe-sec"><h4>Look</h4>
@@ -3862,7 +3860,8 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
           <div class="pills pe-pills">${OPENL.map(([k, v]) => `<label><input type="checkbox" id="m-open-${k}" data-md data-open="${k}" ${dc('m-open-' + k, (pf.open || []).includes(k)) ? 'checked' : ''}><span>${v}</span></label>`).join('')}</div>
         </div>
 
-        <div class="pe-save"><button class="btn pri" data-msave="prof">Save profile</button><span class="hint" id="ms-prof"></span><button type="button" class="link" data-player="${me}">See my page</button></div></details>
+        <div class="pe-save"><button class="btn pri" data-msave="prof">Save profile</button><button type="button" class="link" data-me-view="1">Cancel</button><span class="hint" id="ms-prof"></span></div></details>
+      <h3 class="me-h">More settings</h3>
       <details class="card meform med" id="me-free" ${meOpen['me-free'] ? 'open' : ''}><summary><b>Free times</b><span>${esc(freeText(p.free || []) || 'Not set')}</span></summary>
         <div class="fpick sheetgrid"><span></span>${FSLOTS.map(([, L]) => `<span class="h">${L.slice(0, 3)}</span>`).join('')}${FDAYS.map(([d, D]) => `<span class="d">${D}</span>${FSLOTS.map(([k, L]) => `<label><input type="checkbox" data-mfk="${d}-${k}" ${fr.has(d + '-' + k) ? 'checked' : ''} aria-label="${D} ${L}"></label>`).join('')}`).join('')}</div>
         <label class="field">Note (optional)<input id="m-note" data-md maxlength="80" value="${esc(dv('m-note', pf.note != null ? pf.note : p.avail || ''))}" placeholder="Weeknights after 7 work best"></label>
@@ -3879,7 +3878,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     if (k === 'prof') { const c = document.querySelector('input[name="m-color"]:checked');
       const rv = n => { const x = document.querySelector('input[name="' + n + '"]:checked'); return x ? x.dataset.v : ''; };
       const gv = (document.getElementById('m-gear') || {value: ''}).value, X = {gear: cleanL(gv).slice(0, 60), home: v('m-home'), since: v('m-since'), surf: rv('m-surf'), emo: rv('m-emo'), ring: rv('m-ring'), type: rv('m-type')};
-      const P0 = {uid: FBL.user.uid, nick: v('m-nick'), color: c ? c.dataset.color : '', plays: rv('m-plays'), bh: rv('m-bh'), shot: v('m-shot'), pro: v('m-pro'), bio: v('m-bio'), open: [...document.querySelectorAll('input[data-open]')].filter(x => x.checked).map(x => x.dataset.open)};
+      const P0 = {uid: FBL.user.uid, nick: v('m-nick'), color: c ? c.dataset.color : ((LV.profiles[me] || {}).color || ''), plays: rv('m-plays'), bh: rv('m-bh'), shot: v('m-shot'), pro: v('m-pro'), bio: v('m-bio'), open: [...document.querySelectorAll('input[data-open]')].filter(x => x.checked).map(x => x.dataset.open)};
       err = await liveSet('profiles', me, Object.assign({}, P0, X)); if (err) { err = await liveSet('profiles', me, P0); if (!err) err = 'Saved, but gear, home court, playing since, banner, picture, ring and player type need a database rules update first.'; }
       Object.keys(meDraft).filter(x => /^m-(nick|color|plays|bh|shot|pro|bio|open|gear|home|since|surf|emo|ring|type)/.test(x)).forEach(x => delete meDraft[x]); }
 
@@ -3889,7 +3888,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
       if (ph && (d.length < 10 || d.length > 11)) { btn.disabled = false; say('That doesn’t look like a phone number.'); return; }
       err = await liveSet('contacts', me, {uid: FBL.user.uid, phone: ph, show: !!(ph && show)}) || await liveSet('profiles', me, {uid: FBL.user.uid, ct: true, ph: !!(ph && show)});
       if (!err) LV.contacts[me] = Object.assign(LV.contacts[me] || {id: me}, {phone: ph, show: !!(ph && show)}); delete meDraft['m-phone']; delete meDraft['m-show']; }
-    btn.disabled = false; if (err) { say(err); return; } overlay(); render(); toastLg('Saved.');
+    btn.disabled = false; if (err) { say(err); return; } if (k === 'prof') { meEdit = false; window.scrollTo(0, 0); } overlay(); render(); toastLg(k === 'prof' ? 'Profile saved.' : 'Saved.');
   }
   function sheetChallenge(pid){
     const me = myPid(); if (!me) { sheetAccount(); return; }
@@ -3912,11 +3911,14 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   }
   function liveHtml(){ if (!FBL.admin) return '';
     const D = LV.reports.filter(r => r.status === 'disputed'), P = LV.reports.filter(r => r.status === 'pending' && !counts(r)), C = Object.values(LV.claims), M = {}; (FBL.members || []).forEach(m => M[m.id] = m);
-    return `<div class="card"><h3>Player scores${D.length ? ` · ${D.length} disputed` : ''}</h3><p class="hint" style="margin:0">Disputed scores land here. Count it or remove it.</p>
-      ${D.concat(P).length ? D.concat(P).map(r => `<div class="wrow"><span>${repLine(r)}<br><i class="hint">Posted by ${esc(pname(r.by))} · ${r.status === 'disputed' ? '<b>disputed by ' + esc(pname(otherOf(r))) + '</b>' : 'waiting on ' + esc(pname(otherOf(r)))}</i></span><span><button class="btn sm" data-rok="${r.id}">Count it</button> <button class="link" data-repx="${r.id}">Remove</button></span></div>`).join('') : '<p class="hint">Nothing waiting.</p>'}</div>
-      <div class="card"><h3>Linked players (${C.length} of ${state.players.length})</h3><p class="hint" style="margin:0">Wrong name picked? Tap Unlink.</p>
+    return `${D.concat(P).length ? `<div class="card adm-alert"><h3>Disputed scores${D.length ? ` (${D.length})` : ''}</h3><p class="hint" style="margin:0">Count it or remove it.</p>
+      ${D.concat(P).map(r => `<div class="wrow"><span>${repLine(r)}<br><i class="hint">Posted by ${esc(pname(r.by))} · ${r.status === 'disputed' ? '<b>disputed by ' + esc(pname(otherOf(r))) + '</b>' : 'waiting on ' + esc(pname(otherOf(r)))}</i></span><span><button class="btn sm" data-rok="${r.id}">Count it</button> <button class="link" data-repx="${r.id}">Remove</button></span></div>`).join('')}</div>` : ''}`; }
+  function admStatus(){ if (!FBL.admin) return ''; const C = Object.values(LV.claims).length, D = LV.reports.filter(r => r.status === 'disputed').length, t = bkState.last;
+    return `<div class="adm-stat"><span class="${D ? 'warn' : 'ok'}">${D ? D + ' disputed' : '✓ No disputes'}</span><span>${C} of ${state.players.length} signed in</span><span class="${bkState.err ? 'warn' : ''}">${bkState.err ? 'Backup needs attention' : t ? 'Backed up ' + esc(new Date(t).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})) : 'No backup yet'}</span></div>`; }
+  function linkedHtml(){ if (!FBL.admin) return ''; const C = Object.values(LV.claims);
+    return `<details class="card med" id="adm-linked" ${meOpen['adm-linked'] ? 'open' : ''}><summary><b>Signed-in players</b><span>${C.length} of ${state.players.length}</span></summary><p class="hint" style="margin:0">Wrong name picked? Tap Unlink.</p>
       ${C.length ? `<div class="mems">${C.sort((a, b) => pname(a.id).localeCompare(pname(b.id))).map(c => { const m = (FBL.members || []).find(x => x.uid === c.uid || x.id === c.uid); return `<div><b>${esc(pname(c.id))}</b><span>${esc(m && m.email || 'signed in')} · <button class="link" data-unclaim="${esc(c.id)}">Unlink</button></span></div>`; }).join('')}</div>` : '<p class="hint">Nobody yet.</p>'}
-      ${state.players.filter(x => !LV.claims[x.id]).length ? `<p class="hint" style="margin:0">Not signed in yet: ${state.players.filter(x => !LV.claims[x.id]).map(x => esc(x.name)).join(', ')}</p>` : ''}</div>`; }
+      ${state.players.filter(x => !LV.claims[x.id]).length ? `<p class="hint" style="margin:0">Not signed in yet: ${state.players.filter(x => !LV.claims[x.id]).map(x => esc(x.name)).join(', ')}</p>` : ''}</details>`; }
   function acctChip(){
     if (!FBL.ready && !FBL.err) return '';
     const u = FBL.user, n = FBL.admin ? FBL.subs.length : 0;
@@ -3986,7 +3988,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
       [(p.free || []).length > 0, '🗓️', 'Add when you’re usually free', 'So people know when to ask you', `<button type="button" class="btn sm" data-tab="me" data-jump="me-free">Add</button>`],
       [!!(pf.plays || pf.bh || pf.bio || pf.emo || pf.nick || pf.pro || pf.shot), '🎾', 'Set up your profile', 'Picture, style, a one-line bio', `<button type="button" class="btn sm" data-tab="me" data-jump="me-prof">Set up</button>`],
       [!!(ct.phone || (PRIV && PRIV[me])), '📱', 'Add your phone number', 'So players can text you', `<button type="button" class="btn sm" data-tab="me" data-jump="me-ct">Add</button>`],
-      [state.matches.some(m => m.a === me || m.b === me) || LV.courts.some(c => c.uid === uid || c.a === me || c.b === me) || LV.chOut.length > 0 || LV.reports.some(r => r.by === me), '⚔️', 'Get your first match', 'Challenge someone or post a court', `<button type="button" class="btn sm pri" data-chal="">Challenge</button>`]];
+      [state.matches.some(m => m.a === me || m.b === me) || LV.courts.some(c => c.uid === uid || c.a === me || c.b === me) || LV.chOut.length > 0 || LV.reports.some(r => r.by === me), '⚔️', 'Get your first match', 'Challenge someone or set one up in the group chat', `<button type="button" class="btn sm pri" data-chal="">Challenge</button>`]];
     const done = I.filter(x => x[0]).length; if (done === I.length) return '';
     return `<section class="card gs"><button type="button" class="wx" data-gs-x="1" aria-label="Hide">×</button><h3>Get set up <span>${done} of ${I.length} done</span></h3><div class="gsbar"><i style="width:${Math.round(done / I.length * 100)}%"></i></div>
       ${I.map(([ok, ic, t, d, b]) => `<div class="gsrow${ok ? ' ok' : ''}"><span class="gsi" aria-hidden="true">${ok ? '✓' : ic}</span><div><b>${t}</b><span>${d}</span></div>${ok ? '' : b}</div>`).join('')}</section>`; }
@@ -4001,7 +4003,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     if (!FBL.ready) return FBL.err ? `<div class="mebar"><p>${esc(FBL.err)}</p></div>` : `<div class="homecard skel" aria-label="Loading the league"><div class="sk-row"><i class="sk-c"></i><span><i class="sk-l w60"></i><i class="sk-l w40"></i></span></div><div class="sk-row sk-stats"><i></i><i></i><i></i></div></div>`;
     const u = FBL.user, cn = esc(state.league.commissioner || 'the commissioner');
     if (!u) return tab === 'standings' && (!lsGet('mws-welcome-x') || invFor()) ? `<section class="welcome"><button type="button" class="wx" data-welcome-x="1" aria-label="Hide">×</button><h3>👋 ${invFor() ? `Welcome, ${esc(first(state.players.find(p => p.id === invFor())))}! Sign in and you'll be set up as ${esc(pname(invFor()))}.` : 'New to the league?'}</h3>
-        <ol class="wsteps"><li><b>Sign in</b><span>Google or an email link</span></li><li><b>Pick your name</b><span>from the player list</span></li><li><b>Set up your profile</b><span>picture, playing style, when you're free</span></li><li><b>Find a match</b><span>challenge someone or post a court</span></li></ol>
+        <ol class="wsteps"><li><b>Sign in</b><span>Google or an email link</span></li><li><b>Pick your name</b><span>from the player list</span></li><li><b>Set up your profile</b><span>picture, playing style, when you're free</span></li><li><b>Find a match</b><span>challenge someone or ask in the group chat</span></li></ol>
         <button type="button" class="mb-go wgo" data-acct="1">Sign in to get started</button><p class="hint">Just checking the standings? They're right below.</p></section>`
       : `<div class="mebar"><p><b>Sign in</b> to post scores, courts and your profile.</p><button type="button" class="mb-go" data-acct="1">Sign in</button></div>`;
     if (FBL.admin) { const nA = FBL.subs.length + LV.reports.filter(r => r.status === 'disputed').length;
@@ -4057,7 +4059,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     if (d.bookw) { sheetBook(d.bookw); return; }
     if (d.unclaim) { if (confirm('Unlink ' + pname(d.unclaim) + '? Whoever picked it will have to pick their player again.')) run((async () => { try { await FBL.F.deleteDoc(FBL.F.doc(FBL.db, 'claims', d.unclaim)); delete LV.claims[d.unclaim]; liveRender(); return ''; } catch(_) { return 'Couldn’t unlink that player.'; } })(), 'Unlinked.'); return; }
   });
-  const keepDraft = e => { const t = e.target; if (!t || !t.closest || !t.closest('.meform')) return; if (t.dataset.mfk) { meDraft.free = [...document.querySelectorAll('input[data-mfk]')].filter(x => x.checked).map(x => x.dataset.mfk); return; } if (t.name === 'm-color') { meDraft['m-color'] = t.dataset.color; return; } if (t.name === 'm-plays' || t.name === 'm-bh' || t.name === 'm-shot' || t.name === 'm-surf' || t.name === 'm-emo') { meDraft[t.name] = t.dataset.v; return; } if (t.id) meDraft[t.id] = t.type === 'checkbox' ? t.checked : t.value; };
+  const keepDraft = e => { const t = e.target; if (!t || !t.closest || !t.closest('.meform')) return; if (t.dataset.mfk) { meDraft.free = [...document.querySelectorAll('input[data-mfk]')].filter(x => x.checked).map(x => x.dataset.mfk); return; } if (t.name === 'm-color') { meDraft['m-color'] = t.dataset.color; return; } if (['m-plays', 'm-bh', 'm-shot', 'm-surf', 'm-emo', 'm-ring', 'm-type'].includes(t.name)) { meDraft[t.name] = t.dataset.v; return; } if (t.id) meDraft[t.id] = t.type === 'checkbox' ? t.checked : t.value; };
   document.addEventListener('input', keepDraft); document.addEventListener('change', keepDraft);
   function pePreview(){ const f = document.getElementById('me-prof'); if (!f) return; const q = s2 => f.querySelector(s2), rv = n => { const x = f.querySelector('input[name="' + n + '"]:checked'); return x ? x.dataset.v || '' : ''; };
     const av = q('.pe-av'), c = f.querySelector('input[name="m-color"]:checked'), em = rv('m-emo'), me = myPid(), pl = state.players.find(x => x.id === me) || {name: ''};
@@ -4118,7 +4120,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
   };
   document.addEventListener('click', e => { const t = e.target; if (!t.closest) return;
     const f = document.getElementById('fab'), fm = t.closest('.fab-main');
-    if (f && fm) { const o = !f.classList.contains('fabo'); f.classList.toggle('fabo', o); fm.setAttribute('aria-expanded', String(o)); return; }
+    if (f && fm) { sheetScore(); return; }
     if (f && !t.closest('.fab-menu')) f.classList.remove('fabo');
     const mx = t.closest('.match.mx'); if (mx && !t.closest('button, a, input, select, textarea, form, label')) { const id = mx.dataset.mx, o = !mx.classList.contains('mxo'); mx.classList.toggle('mxo', o); if (o) mxOpen.add(id); else mxOpen.delete(id); } });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { const f = document.getElementById('fab'); if (f) f.classList.remove('fabo'); } });
