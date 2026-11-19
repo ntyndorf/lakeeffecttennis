@@ -1865,6 +1865,17 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
 .rc-hint{margin:0 0 10px}
 .rc-box .empty{margin:8px 0}
 .sb-top{margin:2px 0 14px}
+
+/* awards: top three per award */
+.aw-pl{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.aw-p{display:flex;align-items:center;gap:8px;min-width:0;padding:6px 10px 6px 8px;border-radius:12px;background:rgba(127,140,150,.10)}
+.aw-p.r1{background:color-mix(in srgb,var(--tabc,#F5C542) 15%,transparent)}
+.aw-p.me{box-shadow:inset 0 0 0 1.5px var(--tabc,#F5C542)}
+.aw-rk{flex:none;width:26px;font-weight:800;font-size:14px;color:var(--muted)}.aw-p.r1 .aw-rk{color:var(--tabc,#F5C542)}
+.aw-p .aw-faces .av{width:24px;height:24px;font-size:9.5px}
+.aw-pn{flex:1;min-width:0;font-size:14px;line-height:1.3;overflow-wrap:anywhere}.aw-pn i{font-style:normal;color:var(--muted);font-size:12.5px}
+.aw-pv{flex:none;font-size:13px;font-weight:700;color:var(--muted)}.aw-p.r1 .aw-pv{color:var(--ink)}
+.aw-me b{color:var(--ink);font-weight:700}
 </style><link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&amp;family=Atkinson+Hyperlegible:wght@400;700&amp;family=Archivo+Black&amp;family=Yellowtail&amp;family=Instrument+Serif:ital@0;1&amp;display=swap"><div class="wrap" id="app"></div><script type="application/json" id="league-data">{"league":{"name":"McFetridge Winter Singles","season":"Winter 2026–27","venue":"McFetridge Sports Center","address":"3843 N California Ave","level":"3.0–3.5","startDate":"2026-11-01","endDate":"","tipUrl":"https://venmo.com/u/nicktyndorf","commissioner":"Nick","draft":false,"news":"","newsDate":"2026-10-09"},"players":[{"id":"5u76dri","name":"Nick T","level":"3.0","prof":{"plays":"Righty","bh":"Two-handed","shot":"Inside-out forehand","pro":"Daniil Medvedev"},"ph":1},{"id":"p5onhu0","name":"Spencer C","level":"3.25","ph":1},{"id":"wd1jmau","name":"Brendan O","level":"3.0","ph":1},{"id":"ata2iuw","name":"Tim S","level":"3.0","ph":1},{"id":"sxkx0ga","name":"Emmett F","level":"3.0","ph":1},{"id":"prz4fd6","name":"Mohammed F","level":"3.5","ph":1},{"id":"67cu010","name":"Vitaliy B","level":"3.25","ph":1},{"id":"vswai94","name":"Luke H","level":"3.25","ph":1},{"id":"dp9j7ls","name":"Spencer P","level":"3.25","ph":1},{"id":"cuwu10i","name":"Juan G","level":"3.0","ph":1},{"id":"mfuf932","name":"Zach K","level":"3.0","ph":1},{"id":"iivf8x7","name":"Alvaro R","level":"3.0","ph":1},{"id":"wg8fb4m","name":"John W","level":"3.25","ph":1},{"id":"iev0edc","name":"Nathan H","level":"3.0","ph":1},{"id":"tm2km4c","name":"Brian K","level":"3.0","ph":1},{"id":"uu82eoc","name":"Aidan V","level":"3.0","ph":1},{"id":"w5zwbyo","name":"Salem H","level":"3.25","ph":1},{"id":"m620f34","name":"Bill J","level":"3.25","ph":1},{"id":"zwb6fo9","name":"Peter R","level":"3.0","ph":1},{"id":"4xr256c","name":"Will C","level":"3.0","ph":1}],"matches":[],"updated":"2026-10-29T18:05:36.952Z","upcoming":[]}</script><script id="page-js">
 (function(){
   const SRC = (() => { const e = document.getElementById('league-data').textContent; try { const c = localStorage.getItem('le-state'); if (c) { const cu = (JSON.parse(c) || {}).updated || '', eu = (JSON.parse(e) || {}).updated || ''; if (cu > eu) return c; } } catch(_) {} return e; })();
@@ -1963,7 +1974,7 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
       if (playedUp(o) && c[o.w]) c[o.w].giant++;
       if (o.sets.length > 1 && o.sets[0][0] < o.sets[0][1] && c[o.w]) c[o.w].comeback++;
       [o.w, o.l].forEach(id => { if (c[id]) { c[id].games += o.wg + o.lg; c[id].mins += minsOf(m); } }); });
-    const top = f => { const vals = Object.entries(c).map(([id,v]) => [id, f(v)]); const max = Math.max(0, ...vals.map(v => v[1])); return {max, ids: max ? vals.filter(v => v[1] === max).map(v => v[0]) : []}; };
+    const top = f => { const vals = Object.entries(c).map(([id,v]) => [id, f(v)]); const max = Math.max(0, ...vals.map(v => v[1])); return {max, ids: max ? vals.filter(v => v[1] === max).map(v => v[0]) : [], vals: Object.fromEntries(vals)}; };
     return [
       {t:'Iron Man', d:'Most matches played', u:'matches', ...top(v => v.mp)},
       {t:'Social Butterfly', d:'Most different opponents', u:'opponents', ...top(v => v.opp.size)},
@@ -2015,15 +2026,27 @@ main.panel h3{font:800 12px/1.3 var(--body)!important;letter-spacing:.13em!impor
     ];
   }
   function renderAwards(){ const me = myPid(), A = awards(), B = badgesAll();
-    const mine = me ? (() => { const c = {mp: 0, opp: new Set(), clutch: 0, giant: 0, comeback: 0, games: 0, mins: 0}; chrono().forEach(m => { const o = outcome(m); if (!o || o.ff || (o.w !== me && o.l !== me)) return; c.mp++; c.opp.add(o.w === me ? o.l : o.w); c.games += o.wg + o.lg; c.mins += minsOf(m); if (o.w === me) { if (o.close) c.clutch++; if (playedUp(o)) c.giant++; if (o.sets.length > 1 && o.sets[0][0] < o.sets[0][1]) c.comeback++; } });
-      return {'Iron Man': c.mp, 'Social Butterfly': c.opp.size, 'Clutch': c.clutch, 'Giant Killer': c.giant, 'Comeback Kid': c.comeback, 'Marathon Man': c.games, 'Iron Lung': Math.round(c.mins / 30) / 2}; })() : null;
+    // the top three in each award (ties share a place) and what it takes to climb
+    const ONE = {matches: 'match', opponents: 'opponent', 'clutch wins': 'clutch win', upsets: 'upset', comebacks: 'comeback', games: 'game', hours: 'hour'};
+    const unit = (n, u) => { n = Math.round(n * 10) / 10; return `${n} ${n === 1 ? (ONE[u] || u) : u}`; };
+    const places = a => { const E = Object.entries(a.vals || {}).filter(([, v]) => v > 0).sort((p, q) => q[1] - p[1]), out = []; let rk = 0;
+      E.forEach(([id, v], i) => { if (!i || v < E[i - 1][1]) rk = i + 1; if (rk > 3) return; const g = out.find(x => x.v === v); if (g) g.ids.push(id); else out.push({rk, v, ids: [id]}); }); return out; };
+    const nm = ids => ids.slice(0, 2).map(id => `<button type="button" class="plink" data-player="${id}">${esc(pname(id))}</button>`).join(' & ') + (ids.length > 2 ? ` <i>+${ids.length - 2}</i>` : '');
+    const path = (a, P) => { if (!me) return ''; const step = a.t === 'Iron Lung' ? .5 : 1, v = (a.vals || {})[me] || 0, u = n => unit(n, a.u), mo = n => { const t = unit(n, a.u), k = t.indexOf(' '); return t.slice(0, k) + ' more' + t.slice(k); }, at = P.find(p => p.ids.includes(me));
+      if (!P.length) return `<p class="aw-me">Nobody's on the board yet. ${u(step)} takes #1.</p>`;
+      if (at && at.rk === 1 && at.ids.length === 1) return `<p class="aw-me yes">🏆 You're #1${P[1] ? ` · ${u(v - P[1].v)} ahead of #2` : ''}</p>`;
+      const out = [at ? (at.ids.length > 1 ? `You're tied for #${at.rk}` : `You're #${at.rk}`) : `You: ${u(v)}`];
+      if (at && at.rk === 1) out.push(`<b>${mo(step)}</b> to take it outright`);
+      else { const last = P[P.length - 1];
+        if (!at) out.push(P.length < 3 || last.rk < 3 && P.reduce((t, p) => t + p.ids.length, 0) < 3 ? `<b>${mo(step)}</b> puts you in the top 3` : `<b>${mo(last.v - v)}</b> to reach #${last.rk}`);
+        out.push(`<b>${mo(P[0].v - v + step)}</b> to take #1`); }
+      return `<p class="aw-me">${out.join(' · ')}</p>`; };
     const faces = ids => { const sh = ids.slice(0, 7); return `<span class="aw-faces">${sh.map(id => `<button type="button" class="av-btn" data-player="${id}" title="${esc(pname(id))}" aria-label="${esc(pname(id))}">${avatar(id)}</button>`).join('')}${ids.length > 7 ? `<i>+${ids.length - 7}</i>` : ''}</span>`; };
     const got = B.filter(b => me && b.ids.includes(me)).length;
     return `<div><h2>Awards</h2><p class="sub">Season awards go to whoever leads each category right now. Badges are yours to keep once you earn them.</p></div>
       <section class="aw-sec"><h3>Season awards</h3><div class="aw-grid">${A.map(a => `<div class="card aw">
         <div class="aw-top"><span class="aw-ic">${icon(a.t)}</span><span><b>${esc(a.t)}</b><span class="aw-d">${esc(a.d)}</span></span></div>
-        <div class="aw-who">${a.ids.length ? `${faces(a.ids)}<span><span class="aw-names">${a.ids.map(id => `<button type="button" class="plink" data-player="${id}">${esc(pname(id))}</button>`).join(' & ')}</span><i>${a.max} ${esc(a.u)}</i></span>` : '<span class="aw-open">Up for grabs</span>'}</div>
-        ${mine && !a.ids.includes(me) ? `<p class="aw-me">You: ${mine[a.t] || 0} ${esc(a.u)}${a.max ? ` · ${Math.max(0, a.max - (mine[a.t] || 0) + 1)} to take it` : ''}</p>` : mine && a.ids.includes(me) ? '<p class="aw-me yes">🏆 You hold this one</p>' : ''}
+        ${(() => { const P = places(a); return (P.length ? `<ol class="aw-pl">${P.map(p => `<li class="aw-p r${p.rk}${me && p.ids.includes(me) ? ' me' : ''}"><span class="aw-rk">#${p.rk}</span>${faces(p.ids.slice(0, 2))}<span class="aw-pn">${nm(p.ids)}</span><b class="aw-pv">${esc(unit(p.v, a.u))}</b></li>`).join('')}</ol>` : '<span class="aw-open">Up for grabs</span>') + path(a, P); })()}
       </div>`).join('')}</div></section>
       <section class="aw-sec"><h3>Badges${me ? ` <span class="aw-count">${got} of ${B.length} earned</span>` : ''}</h3><div class="bd-list">${B.map(b => { const have = me && b.ids.includes(me); return `<div class="card bd${have ? ' have' : ''}">
         <span class="bd-med" aria-hidden="true">${b.e}</span>
