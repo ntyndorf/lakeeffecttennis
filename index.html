@@ -1930,6 +1930,12 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
 .ul-e{font-size:26px;line-height:1}.ul-list strong{display:block;font-size:15px}.ul-list i{display:block;font-style:normal;font-size:12.5px;color:#B7CFDD;margin-top:2px}
 .ul-more,.ul-pic{margin:2px 0 0!important;font-size:13px;color:#B7CFDD}.ul-pic{color:#D9F24A;font-weight:700}
 .ul-card .row{justify-content:center;flex-wrap:wrap;gap:8px;margin-top:6px}
+.pr-card{max-width:340px;width:calc(100vw - 40px);box-sizing:border-box;gap:6px}.pr-card>b{font-size:26px}
+.pr-ico{font-size:44px;line-height:1}.pr-sub{margin:0 0 4px!important;font-size:14px}
+.pr-list{list-style:none;margin:2px 0 4px;padding:0;display:grid;gap:8px;width:100%;text-align:left}
+.pr-list li{display:flex;gap:10px;align-items:center;padding:9px 11px;border-radius:12px;background:rgba(207,232,245,.08);font-size:14.5px;line-height:1.3}
+.pr-list li>span:first-child{font-size:22px;line-height:1;flex:none}.cb-card .pr-list b{font:inherit;font-weight:800;color:#fff}.pr-list li>span:last-child span{all:unset;font-weight:800}.pr-list li>span:last-child span.up{color:#7BE0A6}.pr-list li>span:last-child span.dn{color:#F49A8E}
+.pr-card .row{justify-content:center;gap:8px;margin-top:4px}
 @media (max-height:720px){.ul-big{font-size:40px}.cb-card.ul-card>b{font-size:22px}.ul-list{gap:6px}.ul-list li{padding:6px 9px;align-items:center}.ul-list i{display:none}.ul-e{font-size:22px}}
 </style><link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&amp;family=Atkinson+Hyperlegible:wght@400;700&amp;family=Archivo+Black&amp;family=Yellowtail&amp;family=Instrument+Serif:ital@0;1&amp;display=swap"><div class="wrap" id="app"></div><script type="application/json" id="league-data">{"league":{"name":"McFetridge Winter Singles","season":"Winter 2026–27","venue":"McFetridge Sports Center","address":"3843 N California Ave","level":"3.0–3.5","startDate":"2026-11-01","endDate":"","tipUrl":"https://venmo.com/u/nicktyndorf","commissioner":"Nick","draft":false,"news":"","newsDate":"2026-10-09"},"players":[{"id":"5u76dri","name":"Nick T","level":"3.0","prof":{"plays":"Righty","bh":"Two-handed","shot":"Inside-out forehand","pro":"Daniil Medvedev"},"ph":1},{"id":"p5onhu0","name":"Spencer C","level":"3.25","ph":1},{"id":"wd1jmau","name":"Brendan O","level":"3.0","ph":1},{"id":"ata2iuw","name":"Tim S","level":"3.0","ph":1},{"id":"sxkx0ga","name":"Emmett F","level":"3.0","ph":1},{"id":"prz4fd6","name":"Mohammed F","level":"3.5","ph":1},{"id":"67cu010","name":"Vitaliy B","level":"3.25","ph":1},{"id":"vswai94","name":"Luke H","level":"3.25","ph":1},{"id":"dp9j7ls","name":"Spencer P","level":"3.25","ph":1},{"id":"cuwu10i","name":"Juan G","level":"3.0","ph":1},{"id":"mfuf932","name":"Zach K","level":"3.0","ph":1},{"id":"iivf8x7","name":"Alvaro R","level":"3.0","ph":1},{"id":"wg8fb4m","name":"John W","level":"3.25","ph":1},{"id":"iev0edc","name":"Nathan H","level":"3.0","ph":1},{"id":"tm2km4c","name":"Brian K","level":"3.0","ph":1},{"id":"uu82eoc","name":"Aidan V","level":"3.0","ph":1},{"id":"w5zwbyo","name":"Salem H","level":"3.25","ph":1},{"id":"m620f34","name":"Bill J","level":"3.25","ph":1},{"id":"zwb6fo9","name":"Peter R","level":"3.0","ph":1},{"id":"4xr256c","name":"Will C","level":"3.0","ph":1}],"matches":[],"updated":"2026-10-29T18:05:36.952Z","upcoming":[]}</script><script id="page-js">
 (function(){
@@ -3384,7 +3390,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
       if (e.target.closest('[data-close]')) { closeSheet(); return; }
       const b = e.target.closest('button[data-act]'); if (!b) return;
       if (b.dataset.act === 'copy') copyText(cur.msg, b);
-      if (b.dataset.act === 'go') { b.disabled = true; Promise.resolve(cur.go()).then(r => { b.disabled = false; if (r) { errEl.textContent = r; return; } closeSheet(); if (cur.cel) celebrate(cur.cel); else toastLg(cur.done || 'Done!'); }); return; }
+      if (b.dataset.act === 'go') { b.disabled = true; const t0 = Date.now(); if (cur.rcp) prWait = true; Promise.resolve(cur.go()).then(r => { b.disabled = false; if (r) { prWait = false; errEl.textContent = r; return; } closeSheet(); if (cur.rcp) recapAfterPost(cur.rcp, t0, cur); else if (cur.cel) celebrate(cur.cel); else toastLg(cur.done || 'Done!'); }); return; }
       if (b.dataset.act === 'send') { b.disabled = true; fbSend(kind || 'other', cur.msg, cur.data).then(r => { b.disabled = false; if (r) { errEl.textContent = r; return; } closeSheet(); toastLg('Sent! ' + (state.league.commissioner || 'The commissioner') + ' approves it, then it shows up for everyone.'); }); return; }
       if (b.dataset.act === 'apply' && cur.apply) { const r = cur.apply(); if (r) { errEl.textContent = r; return; } closeSheet(); markDirty(); }
     });
@@ -3422,7 +3428,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
         const dup = LV.reports.some(r => r.status !== 'removed' && r.d === d && [r.w, r.l].sort().join() === [w, l].sort().join());
         if (dup && !art) return {err: 'That match is already reported for ' + mdy(d) + '.'};
         const other = w === me ? l : w;
-        return {msg, data: {t: 'score', w, l, d}, cel: me && w === me ? {w: pname(w), l: pname(l), sc: sets.map(([a, b]) => a + '–' + b).join(', '), d, loc} : null, goL: 'Post score', goNote: 'Counts right away. ' + first(state.players.find(x => x.id === other) || {name: ''}) + ' can dispute it if it’s wrong.', done: 'Posted! The standings are updated.',
+        return {msg, data: {t: 'score', w, l, d}, rcp: me ? {me, w, l, d} : null, cel: me && w === me ? {w: pname(w), l: pname(l), sc: sets.map(([a, b]) => a + '–' + b).join(', '), d, loc} : null, goL: 'Post score', goNote: 'Counts right away. ' + first(state.players.find(x => x.id === other) || {name: ''}) + ' can dispute it if it’s wrong.', done: 'Posted! The standings are updated.',
           go: async () => { const R = {by: me, uid: FBL.user.uid, w, l, sc: sets.map(([a, b]) => a + '-' + b).join(', '), d, loc, status: 'confirmed', at: Date.now()};
             const X = Object.assign({}, nt ? {note: nt} : {}, dur ? {dur} : {}, tm ? {tm} : {}); if (!Object.keys(X).length) return liveAdd('reports', R);
             const e = await liveAdd('reports', Object.assign(X, R)); if (!e) return '';
@@ -4260,7 +4266,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
   let unlockT = 0;
   function unlockCheck(){ clearTimeout(unlockT); unlockT = setTimeout(() => { try {
     const me = myPid(); if (!me || !FBL.ready || !LV.repOk) return;
-    if (document.querySelector('.sheetwrap, .celeb')) { unlockT = setTimeout(unlockCheck, 1500); return; }
+    if (prWait || document.querySelector('.sheetwrap, .celeb')) { unlockT = setTimeout(unlockCheck, 1200); return; }
     const key = 'le-unl-' + me, B = badgesAll(), A = awards();
     const now = B.filter(b => b.ids.includes(me)).map(b => 'b:' + b.k).concat(A.filter(a => a.max && a.ids.includes(me)).map(a => 'a:' + a.t));
     let seen = null; try { seen = JSON.parse(localStorage.getItem(key) || 'null'); } catch(_) {}
@@ -4271,6 +4277,75 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
     const items = fresh.map(k => { if (k[0] === 'b') { const b = B.find(x => 'b:' + x.k === k); return {kind: 'b', e: b.e, t: b.t, d: b.d}; }
       const a = A.find(x => 'a:' + x.t === k); return {kind: 'a', e: AW_E[a.t] || '🏆', t: a.t, d: `${a.ids.length > 1 ? 'Tied for' : 'You’re'} #1 · ${a.max} ${a.u}`}; });
     unlockPop(items); } catch(_) {} }, 600); }
+  // after you post a score and nothing unlocked: a short recap of what the match did for you (2–3 lines)
+  function postRecap(me, mid){ const m = state.matches.find(x => x.id === mid), o = m && outcome(m); if (!o || (o.w !== me && o.l !== me)) return null;
+    const won = o.w === me, opp = won ? o.l : o.w, A0 = rcAt(x => x.id !== mid), A1 = rcAt(null), r0 = A0.rk[me] || 0, r1 = A1.rk[me] || 0, rows = A1.rows.filter(r => r.mp);
+    const L = [], pl = (n, w) => n + ' ' + w + (n === 1 ? '' : (w.endsWith('ch') ? 'es' : 's'));
+    // 1. where you stand
+    if (!r0) L.push(['📈', `You're on the board at <b>#${r1}</b>`]);
+    else if (r1 < r0) L.push(['📈', `Up to <b>#${r1}</b> <span class="up">▲${r0 - r1}</span>`]);
+    else if (r1 > r0) L.push(['📉', `Now <b>#${r1}</b> <span class="dn">▼${r1 - r0}</span>`]);
+    else if (r1 === 1 && rows[1]) L.push(['👑', `Still <b>#1</b>, ${pl(rows[0].pts - rows[1].pts, 'pt')} clear`]);
+    else L.push(['📊', `Holding at <b>#${r1}</b>`]);
+    // 2. points (a loss gets the consolation version)
+    const pe = countedIds().has(mid) ? ptsFrom(o) : null, mine = pe ? (won ? pe.w : pe.l) : 0, up = won && playedUp(o);
+    if (!pe) L.push(['🔁', `Rematch: this one doesn't add points`]);
+    else if (won) L.push(['➕', up ? `+3 win · +1 upset bonus = <b>+${mine} pts</b>` : `+3 for the win = <b>+${mine} pts</b>`]);
+    else if (o.close) L.push(['💪', `Close loss still earns <b>2 pts</b>`]);
+    else L.push(['➕', `<b>+1 pt</b> for getting out there`]);
+    // 3. the most interesting extra
+    const C = [], my = chrono().filter(x => (x.a === me || x.b === me) && outcome(x) && !outcome(x).ff), res = my.map(x => outcome(x).w === me);
+    let run = 0; for (let i = res.length - 1; i >= 0 && res[i]; i--) run++;
+    let best = 0, cur = 0; res.forEach(w => { cur = w ? cur + 1 : 0; best = Math.max(best, cur); });
+    const B = badgesAll(), has = k => (B.find(b => b.k === k) || {ids: []}).ids.includes(me);
+    const opps = new Set(my.map(x => x.a === me ? x.b : x.a)), t3 = my.filter(x => { const q = outcome(x); return q.w === me && q.sets.length === 3 && !q.ret; }).length;
+    const tbw = my.reduce((t, x) => { const q = outcome(x), S = q.w === me ? q.sets : q.sets.map(([a, b]) => [b, a]); return t + S.filter(([a, b], i) => a > b && tbSet(S, i)).length; }, 0);
+    const courts = new Set(my.map(x => isMcF(x.loc) ? 'mcf' : normLoc(x.loc).toLowerCase())), mk = (m.date || today()).slice(0, 7), mg = my.filter(x => (x.date || '').startsWith(mk)).reduce((t, x) => { const q = outcome(x); return t + q.wg + q.lg; }, 0);
+    // almost there: a badge you're one or two away from
+    if (won && run === 2 && !has('hat')) C.push(['🎩', `1 more win in a row for <b>Hat Trick</b>`]);
+    if (won && run >= 3 && run < 5 && !has('five')) C.push(['🧨', `W${run}. ${5 - run} more in a row for <b>Five Alive</b>`]);
+    if (!has('mingler') && opps.size >= 3 && opps.size < 5) C.push(['🦋', `${pl(5 - opps.size, 'more opponent')} for <b>Mingler</b>`]);
+    if (!has('ten') && my.length >= 8 && my.length < 10) C.push(['🔟', `${pl(10 - my.length, 'more match')} for <b>Double Digits</b>`]);
+    if (!has('wall') && t3 === 2) C.push(['🧱', `1 more three-set win for <b>The Wall</b>`]);
+    if (!has('icewater') && tbw === 2) C.push(['🧠', `1 more tiebreak set for <b>Ice Water</b>`]);
+    if (!has('explorer') && courts.size === 2) C.push(['🗺️', `1 more court for <b>Explorer</b>`]);
+    if (!has('century') && mg >= 75 && mg < 100) C.push(['💯', `${100 - mg} more games this month for <b>Century</b>`]);
+    // award chase: close behind #1
+    A1.A.forEach(a => { const v = (a.vals || {})[me] || 0; if (!a.max || !v || a.ids.includes(me) || a.max - v > 3) return; const g = Math.round((a.max - v) * 10) / 10;
+      C.push([AW_E[a.t] || '🏆', `${g} ${g === 1 ? ({matches: 'match', opponents: 'opponent', 'clutch wins': 'clutch win', upsets: 'upset', comebacks: 'comeback', games: 'game', hours: 'hour'}[a.u] || a.u) : a.u} behind ${esc(first({name: pname(a.ids[0])}))} for <b>${esc(a.t)}</b>`]); });
+    // streak
+    if (won && run >= 2 && !C.some(c => c[0] === '🎩' || c[0] === '🧨')) C.push(['🔥', `That's <b>W${run}</b>`]);
+    // loss: fight stat or bounce-back
+    if (!won) { const n3 = my.filter(x => outcome(x).sets.length === 3).length; if (o.sets.length === 3) C.push(['🧱', `Your ${ord(n3)} three-setter this season`]);
+      const i0 = res.slice(0, -1).lastIndexOf(false); if (i0 >= 0 && res[i0 + 1]) C.push(['🔁', `Last time you lost, you won the next one`]); }
+    // head-to-head
+    const h = my.filter(x => (x.a === opp || x.b === opp)), hw = h.filter(x => outcome(x).w === me).length, hl = h.length - hw, on = esc(first({name: pname(opp)}));
+    if (h.length >= 2) C.push(['⚔️', hw > hl ? `You lead ${on} <b>${hw}–${hl}</b> this season` : hw < hl ? `${on} leads you <b>${hl}–${hw}</b> this season` : `All square with ${on} at <b>${hw}–${hl}</b>`]);
+    // fun facts
+    if (m.date) { const wk = monOf(m.date), W = state.matches.filter(x => x.date && monOf(x.date) === wk && outcome(x)), mineW = W.filter(x => x.a === me || x.b === me).length;
+      if (+m.dur > 0 && W.every(x => !(+x.dur > +m.dur))) C.push(['⏱️', `Longest match this week so far (${durTxt(+m.dur)})`]);
+      if (mineW >= 3) C.push(['🗓️', `Your ${ord(mineW)} match this week`]); }
+    if ([10, 25, 50, 75, 100].includes(my.length)) C.push(['🎾', `Your ${ord(my.length)} league match`]);
+    const gTot = my.reduce((t, x) => { const q = outcome(x); return t + q.wg + q.lg; }, 0), gPrev = gTot - (o.wg + o.lg), mil = [100, 250, 500, 750, 1000].find(n => gPrev < n && gTot >= n);
+    if (mil) C.push(['🎾', `${mil} games played this season`]);
+    if (C.length) L.push(C[0]);
+    return {won, opp, sets: o.sets, lines: L, m}; }
+  let prWait = false;
+  function recapAfterPost(p, t0, cur){ let tries = 0;
+    const look = () => { const r = LV.reports.find(x => x.by === p.me && x.w === p.w && x.l === p.l && x.d === p.d && (x.at || 0) >= t0 - 60000), m = r && state.matches.find(x => x.id === 'r-' + r.id);
+      if (m) { let R = null; try { R = postRecap(p.me, m.id); } catch(_) {} prWait = false; if (R) postRecapPop(R); else if (cur.cel) celebrate(cur.cel); else toastLg(cur.done || 'Posted!'); return; }
+      if (++tries > 26) { prWait = false; if (cur.cel) celebrate(cur.cel); else toastLg(cur.done || 'Posted!'); return; }
+      setTimeout(look, 300); };
+    look(); }
+  const ord = n => n + ([, 'st', 'nd', 'rd'][(n % 100 >> 3 ^ 1) && n % 10] || 'th');
+  function postRecapPop(R){ if (!R) return; const sc = R.sets.map(([a, b]) => (R.won ? a + '–' + b : b + '–' + a)).join(', ');
+    const d = document.createElement('div'); d.className = 'celeb pr-pop'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', R.won ? 'Nice win' : 'Score posted');
+    const ball = R.won && !matchMedia('(prefers-reduced-motion: reduce)').matches ? `<svg class="pr-ball" viewBox="0 0 120 120" width="72" height="72" aria-hidden="true"><g class="cb-ball"><circle cx="60" cy="60" r="44" fill="#D9F24A"/><path d="M29 30 Q51 60 29 90 M91 30 Q69 60 91 90" fill="none" stroke="#F7FAFC" stroke-width="6" stroke-linecap="round"/></g></svg>` : `<div class="pr-ico" aria-hidden="true">${R.won ? '🎾' : '🤝'}</div>`;
+    d.innerHTML = `<div class="cb-card pr-card">${ball}<b>${R.won ? 'Nice win!' : 'Score posted'}</b><p class="pr-sub">${R.won ? '' : 'vs '}${esc(pname(R.opp))} · ${esc(sc)}</p>
+      <ul class="pr-list">${R.lines.map(([e, t]) => `<li><span aria-hidden="true">${e}</span><span>${t}</span></li>`).join('')}</ul>
+      <div class="row"><button type="button" class="btn pri" data-pr-share="1">Share result</button><button type="button" class="btn" data-pr-x="1">Done</button></div></div>`;
+    d.addEventListener('click', e => { const t = e.target; if (t === d || t.closest('[data-pr-x]')) d.remove(); else if (t.closest('[data-pr-share]')) { d.remove(); openCard('result', R.m.id); } });
+    document.body.appendChild(d); }
   function unlockPop(items){ const nb = items.filter(x => x.kind === 'b'), na = items.length - nb.length, pic = nb.length ? nb[0].e : '';
     const title = !na ? (nb.length > 1 ? `${nb.length} badges unlocked!` : 'Badge unlocked!') : !nb.length ? (na > 1 ? 'New awards!' : 'New award!') : 'Unlocked!';
     const d = document.createElement('div'); d.className = 'celeb ul-pop'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', title);
