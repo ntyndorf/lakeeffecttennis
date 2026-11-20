@@ -2673,7 +2673,11 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
         <label class="field" style="grid-column:1/-1">What's new (shows under the header; leave blank to hide)<input id="f-news" value="${esc(L.news || '')}" maxlength="200"></label>
         <label class="field">Tip jar link<input id="f-tipUrl" placeholder="https://venmo.com/u/…" value="${esc(L.tipUrl)}"></label>
       </div></details>
-      ${backupHtml()}`;
+      ${backupHtml()}
+      <details class="card med" id="adm-test" ${meOpen['adm-test'] ? 'open' : ''}><summary><b>Test the pop-ups</b><span>Nothing gets posted</span></summary>
+        <p class="hint">See what players get after posting a score. Uses your most recent match (or the league's latest), and doesn't change anything.</p>
+        <div class="row"><button type="button" class="btn" data-pv-pop="recap">Match recap</button><button type="button" class="btn" data-pv-pop="unlock">Badge unlock</button></div>
+      </details>`;
   }
 
   function ticker(){
@@ -4331,6 +4335,12 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
     if (C.length) L.push(C[0]);
     return {won, opp, sets: o.sets, lines: L, m}; }
   let prWait = false;
+  // commissioner preview: show the pop-ups without posting anything or marking anything seen
+  document.addEventListener('click', e => { const t = e.target.closest && e.target.closest('[data-pv-pop]'); if (!t) return;
+    const me = myPid(), C = chrono().filter(m => outcome(m) && !outcome(m).ff), mine = C.filter(m => m.a === me || m.b === me), m = (mine.length ? mine : C).slice(-1)[0];
+    if (t.dataset.pvPop === 'recap') { if (!m) { toastLg('No matches yet to preview.'); return; } const who = mine.length ? me : outcome(m).w; const R = postRecap(who, m.id); if (R) postRecapPop(R); return; }
+    const B = badgesAll(), got = B.filter(b => me && b.ids.includes(me)), pick = (got.length ? got : B).slice(0, 3);
+    unlockPop(pick.map(b => ({kind: 'b', e: b.e, t: b.t, d: b.d}))); });
   function recapAfterPost(p, t0, cur){ let tries = 0;
     const look = () => { const r = LV.reports.find(x => x.by === p.me && x.w === p.w && x.l === p.l && x.d === p.d && (x.at || 0) >= t0 - 60000), m = r && state.matches.find(x => x.id === 'r-' + r.id);
       if (m) { let R = null; try { R = postRecap(p.me, m.id); } catch(_) {} prWait = false; if (R) postRecapPop(R); else if (cur.cel) celebrate(cur.cel); else toastLg(cur.done || 'Posted!'); return; }
