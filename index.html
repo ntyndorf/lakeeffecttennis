@@ -2397,7 +2397,7 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
   function renderMatch(id){ const m = state.matches.find(x => x.id === id), o = m && outcome(m); OK = countedIds();
     if (!m || !o) return `<button class="back" data-tab="results">← Results</button><div class="empty">That match isn't on the board anymore.</div>`;
     const pe = OK.has(m.id) ? ptsFrom(o) : null, st = storyOf(m, o), all = state.matches;
-    let odds = ''; try { state.matches = all.filter(x => x.id !== m.id && x.date && m.date && x.date < m.date); odds = oddsBar(o.w, o.l); } catch(_) {} finally { state.matches = all; }
+    let odds = ''; const r0 = RAT; try { state.matches = all.filter(x => x.id !== m.id && x.date && m.date && x.date < m.date); RAT = null; odds = oddsBar(o.w, o.l); } catch(_) {} finally { state.matches = all; RAT = r0; }
     const meet = all.filter(x => outcome(x) && ((x.a === o.w && x.b === o.l) || (x.a === o.l && x.b === o.w))).sort((a, b) => (b.date || '').localeCompare(a.date || '')), ww = meet.filter(x => outcome(x).w === o.w).length;
     const side = (id, won) => `<button type="button" class="mp-side${won ? ' won' : ''}" data-player="${id}">${avatar(id, 'lg')}<b>${esc(pname(id))}</b>${pe ? `<span class="pe${won ? '' : ' lo'}">+${won ? pe.w : pe.l} pts</span>` : ''}</button>`;
     return `<button class="back" data-tab="results">← Results</button>
