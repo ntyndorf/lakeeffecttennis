@@ -4306,17 +4306,17 @@ details.med .roster,details.med form,details.med .mems,details.med>.hint,details
     const tbw = my.reduce((t, x) => { const q = outcome(x), S = q.w === me ? q.sets : q.sets.map(([a, b]) => [b, a]); return t + S.filter(([a, b], i) => a > b && tbSet(S, i)).length; }, 0);
     const courts = new Set(my.map(x => isMcF(x.loc) ? 'mcf' : normLoc(x.loc).toLowerCase())), mk = (m.date || today()).slice(0, 7), mg = my.filter(x => (x.date || '').startsWith(mk)).reduce((t, x) => { const q = outcome(x); return t + q.wg + q.lg; }, 0);
     // almost there: a badge you're one or two away from
-    if (won && run === 2 && !has('hat')) C.push(['🎩', `1 more win in a row for <b>Hat Trick</b>`]);
-    if (won && run >= 3 && run < 5 && !has('five')) C.push(['🧨', `W${run}. ${5 - run} more in a row for <b>Five Alive</b>`]);
-    if (!has('mingler') && opps.size >= 3 && opps.size < 5) C.push(['🦋', `${pl(5 - opps.size, 'more opponent')} for <b>Mingler</b>`]);
-    if (!has('ten') && my.length >= 8 && my.length < 10) C.push(['🔟', `${pl(10 - my.length, 'more match')} for <b>Double Digits</b>`]);
-    if (!has('wall') && t3 === 2) C.push(['🧱', `1 more three-set win for <b>The Wall</b>`]);
-    if (!has('icewater') && tbw === 2) C.push(['🧠', `1 more tiebreak set for <b>Ice Water</b>`]);
-    if (!has('explorer') && courts.size === 2) C.push(['🗺️', `1 more court for <b>Explorer</b>`]);
-    if (!has('century') && mg >= 75 && mg < 100) C.push(['💯', `${100 - mg} more games this month for <b>Century</b>`]);
+    if (won && run === 2 && !has('hat')) C.push(['🎩', `1 more win in a row for the <b>Hat Trick</b> badge`]);
+    if (won && run >= 3 && run < 5 && !has('five')) C.push(['🧨', `W${run}. ${5 - run} more in a row for the <b>Five Alive</b> badge`]);
+    if (!has('mingler') && opps.size >= 3 && opps.size < 5) C.push(['🦋', `${pl(5 - opps.size, 'more opponent')} for the <b>Mingler</b> badge`]);
+    if (!has('ten') && my.length >= 8 && my.length < 10) C.push(['🔟', `${pl(10 - my.length, 'more match')} for the <b>Double Digits</b> badge`]);
+    if (!has('wall') && t3 === 2) C.push(['🧱', `1 more three-set win for the <b>The Wall</b> badge`]);
+    if (!has('icewater') && tbw === 2) C.push(['🧠', `1 more tiebreak set for the <b>Ice Water</b> badge`]);
+    if (!has('explorer') && courts.size === 2) C.push(['🗺️', `1 more court for the <b>Explorer</b> badge`]);
+    if (!has('century') && mg >= 75 && mg < 100) C.push(['💯', `${100 - mg} more games this month for the <b>Century</b> badge`]);
     // award chase: close behind #1
     A1.A.forEach(a => { const v = (a.vals || {})[me] || 0; if (!a.max || !v || a.ids.includes(me) || a.max - v > 3) return; const g = Math.round((a.max - v) * 10) / 10;
-      C.push([AW_E[a.t] || '🏆', `${g} ${g === 1 ? ({matches: 'match', opponents: 'opponent', 'clutch wins': 'clutch win', upsets: 'upset', comebacks: 'comeback', games: 'game', hours: 'hour'}[a.u] || a.u) : a.u} behind ${esc(first({name: pname(a.ids[0])}))} for <b>${esc(a.t)}</b>`]); });
+      C.push([AW_E[a.t] || '🏆', `${g} ${g === 1 ? ({matches: 'match', opponents: 'opponent', 'clutch wins': 'clutch win', upsets: 'upset', comebacks: 'comeback', games: 'game', hours: 'hour'}[a.u] || a.u) : a.u} behind ${esc(first({name: pname(a.ids[0])}))} for the <b>${esc(a.t)}</b> award`]); });
     // streak
     if (won && run >= 2 && !C.some(c => c[0] === '🎩' || c[0] === '🧨')) C.push(['🔥', `That's <b>W${run}</b>`]);
     // loss: fight stat or bounce-back
